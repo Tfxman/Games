@@ -1,5 +1,6 @@
 (function(root){
 'use strict';
+const HEXBOUND_ENGINE=(function(){
 const W=11,H=11,MAX=24,DIRS=[[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1]];
 const key=(x,y)=>x+','+y,inside=(x,y)=>x>=0&&y>=0&&x<W&&y<H;
 const dist=(a,b)=>Math.max(Math.abs(a.x-b.x),Math.abs(a.y-b.y));
@@ -36,7 +37,7 @@ candidates.sort((a,b)=>b.score-a.score);return candidates[0]||null;}
 function cpuAct(s){let a=chooseCpuAction(s);if(!a){endTurn(s);return {ok:true,type:'pass'};}if(a.type==='attack')return attack(s,a.id,a.targetId);if(a.type==='push')return push(s,a.id,a.dx,a.dy);return move(s,a.id,a.x,a.y);}
 function stateSummary(s){return {phase:s.phase,player:s.player,round:s.round,ap:s.ap,placed:{...s.placed},A:total(s,'A'),B:total(s,'B'),winner:s.winner};}
 return {W,H,MAX,DIRS,createGame,clone,deploy,autoDeploy,finishDeployment,at,get,total,stackCount,movementRange,legalMoves,adjacent,attackPreview,attack,pushPreview,push,move,endTurn,chooseCpuAction,cpuAct,stateSummary,ownerHome};
-})(typeof globalThis!=='undefined'?globalThis:this);
-if(typeof module!=='undefined'&&module.exports)module.exports=HEXBOUND_ENGINE;
+})();
 root.HEXBOUND_ENGINE=HEXBOUND_ENGINE;
+if(typeof module!=='undefined'&&module.exports)module.exports=HEXBOUND_ENGINE;
 })(typeof globalThis!=='undefined'?globalThis:this);
