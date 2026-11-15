@@ -92,6 +92,7 @@
     <h2>🐍 Snake</h2>
     <span>Eat, grow, don't crash. Updated v1.0</span>
   </a>
+  <a class="game-card" href="hexbound/index.html"><h2>⬡ HEXBOUND</h2><span>Mass, facing, flanking & objective control. Play prototype v0.1</span></a>
   <a class="game-card soon" href="#">
     <h2>Coming soon…</h2>
     <span>Your next game goes here</span>
