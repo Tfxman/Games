@@ -131,7 +131,7 @@ board.addEventListener('dragover',e=>{if(e.target.closest('.cell'))e.preventDefa
 board.addEventListener('drop',e=>{let c=e.target.closest('.cell');if(!c)return;e.preventDefault();let id=dragId||e.dataTransfer.getData('text/plain');dragId=null;let u=E.get(S,id);if(S.phase==='deploy'){doCell(+c.dataset.x,+c.dataset.y);return;}if(u&&u.owner===S.player&&!S.used.includes(id)){selected=id;action='move';doCell(+c.dataset.x,+c.dataset.y);}});
 document.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',()=>{let a=b.dataset.action;if(a==='end'){end();return;}if(a==='pass'){end();return;}setAction(a);}));
 $('clearAction').onclick=()=>{action=null;selected=null;render();};$('finishDeploy').onclick=finishDeploy;$('autoDeploy').onclick=autoDeploy;
-$('newGame').onclick=()=>{mode=$('mode').value;startGame();};$('mode').onchange=()=>{mode=$('mode').value;startGame();};
+$('newGame').onclick=()=>{mode=$('mode').value;startGame();};$('mode').onchange=()=>{mode=$('mode').value;startGame();};$('initiative').onchange=()=>{mode=$('mode').value;startGame();};
 $('tutorialToggle').onclick=()=>{if(!tutorialOn)startScenario(0);else{tutorialOn=false;startGame();}};
 $('scenarioSelect').onchange=()=>startScenario(+$('scenarioSelect').value);$('prevScenario').onclick=()=>startScenario(scenarioIndex-1);$('resetScenario').onclick=()=>startScenario(scenarioIndex);$('nextScenario').onclick=()=>{if(scenarioIndex===scenarios.length-1){startGame();return;}startScenario(scenarioIndex+1);};
 $('enemyDemo').onclick=()=>{let t=E.get(S,'a1'),a=E.get(S,'b1');if(t&&a){S.player='B';S.ap=3;S.used=[];E.attack(S,a.id,t.id);S.player='A';S.ap=3;S.used=[];render();}};
