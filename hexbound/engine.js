@@ -19,8 +19,8 @@ function finishDeployment(s){if(s.phase!=='deploy'||s.placed[s.player]!==MAX)ret
 function movementRange(u){return u.hp===1?4:u.hp===2?3:2;}
 function legalMoves(s,u){if(!u||u.hp<=0)return [];let max=movementRange(u),seen=new Set([key(u.x,u.y)]),front=[{x:u.x,y:u.y,d:0}],out=[];while(front.length){let c=front.shift();if(c.d>=max)continue;for(const [dx,dy] of DIRS){let x=c.x+dx,y=c.y+dy,k=key(x,y);if(!inside(x,y)||seen.has(k)||at(s,x,y))continue;seen.add(k);out.push({x,y,d:c.d+1});front.push({x,y,d:c.d+1});}}return out;}
 function adjacent(a,b){return dist(a,b)===1;}
-function sideSupport(s,target,owner,exclude){let dirs=new Set();for(const u of s.units){if(u.hp<=0||u.owner!==owner||u.id===exclude||u.x===target.x&&u.y===target.y||!adjacent(u,target))continue;dirs.add(Math.sign(u.x-target.x)+','+Math.sign(u.y-target.y));}return Math.min(2,dirs.size);}
-function attackPreview(s,attacker,target){if(!attacker||!target||attacker.owner===target.owner||!adjacent(attacker,target))return {ok:false,reason:'not-adjacent'};let flank=sideSupport(s,target,attacker.owner,attacker.id),guard=sideSupport(s,target,target.owner,target.id),power=attacker.hp+flank,defense=target.hp+guard;return {ok:true,power,defense,flank,guard,damage:power>defense?(power>=defense+2?2:1):0};}
+function sideSupport(s,target,owner,exclude){let dirs=new Set();for(const u of s.units){if(u.hp<=0||u.owner!==owner||u.id===exclude||u.x===target.x&&u.y===target.y||!adjacent(u,target))continue;dirs.add(Math.sign(u.x-target.x)+','+Math.sign(u.y-target.y));}return dirs.size;}
+function attackPreview(s,attacker,target){if(!attacker||!target||attacker.owner===target.owner||!adjacent(attacker,target))return {ok:false,reason:'not-adjacent'};let flank=Math.min(2,sideSupport(s,target,attacker.owner,attacker.id)),guard=Math.min(1,sideSupport(s,target,target.owner,target.id)),power=attacker.hp+flank,defense=target.hp+guard;return {ok:true,power,defense,flank,guard,damage:power>defense?(power>=defense+2?2:1):0};}
 function canAct(s,u){return s.phase==='play'&&s.winner===null&&u&&u.hp>0&&u.owner===s.player&&s.ap>0&&!s.used.includes(u.id);}
 function consume(s,ids,event){for(const id of ids)if(!s.used.includes(id))s.used.push(id);s.ap--;s.lastEvent=event;if(total(s,s.player==='A'?'B':'A')===0){s.winner=s.player;s.phase='over';addLog(s,'Player '+s.player+' wins by eliminating the opposing force.');}else if(s.ap<=0)endTurn(s);return {ok:true,event};}
 function endTurn(s){s.selected=null;s.used=[];if(s.player==='A'){s.player='B';s.ap=3;}else{s.player='A';s.ap=3;s.round++;}return s.player;}
@@ -29,11 +29,26 @@ function attack(s,id,targetId){let a=get(s,id),t=get(s,targetId);if(!canAct(s,a)
 function lineForPush(s,a,dx,dy){let friends=[a],x=a.x-dx,y=a.y-dy;while(friends.length<3&&inside(x,y)){let u=at(s,x,y);if(!u||u.owner!==a.owner)break;friends.push(u);x-=dx;y-=dy;}let enemies=[],tx=a.x+dx,ty=a.y+dy;while(inside(tx,ty)&&enemies.length<3){let u=at(s,tx,ty);if(!u||u.owner===a.owner)break;enemies.push(u);tx+=dx;ty+=dy;}return {friends,enemies,dx,dy,landing:{x:tx,y:ty}};}
 function pushPreview(s,id,dx,dy){let a=get(s,id);if(!a||![[0,-1],[1,0],[0,1],[-1,0]].some(d=>d[0]===dx&&d[1]===dy))return {ok:false,reason:'push-must-be-orthogonal'};let l=lineForPush(s,a,dx,dy);if(!l.enemies.length)return {ok:false,reason:'no-enemy-line'};let fm=l.friends.reduce((n,u)=>n+u.hp,0),em=l.enemies.reduce((n,u)=>n+u.hp,0);if(fm<=em)return {ok:false,reason:'not-enough-mass',friendlyMass:fm,enemyMass:em,line:l};if(inside(l.landing.x,l.landing.y)&&at(s,l.landing.x,l.landing.y))return {ok:false,reason:'blocked',line:l};return {ok:true,friendlyMass:fm,enemyMass:em,line:l};}
 function push(s,id,dx,dy){let a=get(s,id);if(!canAct(s,a))return {ok:false,reason:'cannot-act'};let p=pushPreview(s,id,dx,dy);if(!p.ok){s.lastEvent={type:'push-fail',reason:p.reason,attacker:id};return p;}let {friends,enemies}=p.line;let eliminated=[];for(let i=enemies.length-1;i>=0;i--){let e=enemies[i],nx=e.x+dx,ny=e.y+dy;if(!inside(nx,ny)){e.hp=0;eliminated.push(e.id);}else{e.x=nx;e.y=ny;}}addLog(s,'SUMITO: '+p.friendlyMass+' friendly mass pushes '+p.enemyMass+' enemy mass.');if(eliminated.length)addLog(s,eliminated.length+' enemy stack(s) pushed off-board and eliminated.');return consume(s,friends.map(u=>u.id),{type:'push',attacker:id,friends:friends.map(u=>u.id),enemies:enemies.map(u=>u.id),friendlyMass:p.friendlyMass,enemyMass:p.enemyMass,eliminated});}
-function chooseCpuAction(s){let own=s.units.filter(u=>u.hp>0&&u.owner===s.player&&!s.used.includes(u.id)),foes=s.units.filter(u=>u.hp>0&&u.owner!==(s.player));if(!own.length||!foes.length)return null;let candidates=[];
-for(const u of own){for(const t of foes){if(adjacent(u,t)){let p=attackPreview(s,u,t);if(p.ok)candidates.push({type:'attack',id:u.id,targetId:t.id,score:p.damage*30+p.flank*5-p.guard*2+(t.hp<=p.damage?100:0)});}}
-for(const [dx,dy] of [[0,-1],[1,0],[0,1],[-1,0]]){let p=pushPreview(s,u.id,dx,dy);if(p.ok)candidates.push({type:'push',id:u.id,dx,dy,score:(p.line.enemies.some(e=>!inside(e.x+dx,e.y+dy))?130:25)+(p.friendlyMass-p.enemyMass)*3});}
-for(const dest of legalMoves(s,u)){let nearest=Math.min(...foes.map(e=>dist(dest,e)));let flankPotential=foes.filter(e=>adjacent(dest,e)).length;let center=5-(Math.abs(dest.x-5)+Math.abs(dest.y-5))*.12;let advance=Math.min(...foes.map(e=>dist(u,e)))-nearest;candidates.push({type:'move',id:u.id,x:dest.x,y:dest.y,score:advance*3+flankPotential*2+center*.2+(dest.x+dest.y*.01)*.00001});}}
-candidates.sort((a,b)=>b.score-a.score);return candidates[0]||null;}
+function chooseCpuAction(s){
+let own=s.units.filter(u=>u.hp>0&&u.owner===s.player&&!s.used.includes(u.id)),foes=s.units.filter(u=>u.hp>0&&u.owner!==s.player);
+if(!own.length||!foes.length)return null;
+let candidates=[];
+for(const u of own){
+ for(const t of foes){if(adjacent(u,t)){let p=attackPreview(s,u,t);if(p.ok&&p.damage>0)candidates.push({type:'attack',id:u.id,targetId:t.id,score:100+p.damage*35+p.flank*12+(t.hp<=p.damage?100:0)-p.guard*3});}}
+ for(const [dx,dy] of [[0,-1],[1,0],[0,1],[-1,0]]){let p=pushPreview(s,u.id,dx,dy);if(p.ok){let edge=p.line.enemies.some(e=>!inside(e.x+dx,e.y+dy));candidates.push({type:'push',id:u.id,dx,dy,score:65+(edge?100:0)+(p.friendlyMass-p.enemyMass)*5});}}
+ for(const dest of legalMoves(s,u)){
+  const ox=u.x,oy=u.y,before=Math.min(...foes.map(e=>dist(u,e)));u.x=dest.x;u.y=dest.y;
+  const after=Math.min(...foes.map(e=>dist(u,e)));let attackValue=0,pushValue=0,support=0;
+  for(const t of foes)if(adjacent(u,t)){let p=attackPreview(s,u,t);if(p.ok&&p.damage>0)attackValue=Math.max(attackValue,p.damage*25+p.flank*8);}
+  for(const [dx,dy] of [[0,-1],[1,0],[0,1],[0,-1],[-1,0]]){let p=pushPreview(s,u.id,dx,dy);if(p.ok)pushValue=Math.max(pushValue,30+(p.line.enemies.some(e=>!inside(e.x+dx,e.y+dy))?70:0));}
+  for(const ally of own)if(ally.id!==u.id&&adjacent(u,ally))support++;
+  const center=10-(Math.abs(dest.x-5)+Math.abs(dest.y-5));
+  u.x=ox;u.y=oy;
+  candidates.push({type:'move',id:u.id,x:dest.x,y:dest.y,score:(before-after)*5+attackValue+pushValue+support*.7+center*.15-(dest.x+dest.y*.01)*.00001});
+ }
+}
+candidates.sort((a,b)=>b.score-a.score);return candidates[0]||null;
+}
 function cpuAct(s){let a=chooseCpuAction(s);if(!a){endTurn(s);return {ok:true,type:'pass'};}if(a.type==='attack')return attack(s,a.id,a.targetId);if(a.type==='push')return push(s,a.id,a.dx,a.dy);return move(s,a.id,a.x,a.y);}
 function stateSummary(s){return {phase:s.phase,player:s.player,round:s.round,ap:s.ap,placed:{...s.placed},A:total(s,'A'),B:total(s,'B'),winner:s.winner};}
 return {W,H,MAX,DIRS,createGame,clone,deploy,autoDeploy,finishDeployment,at,get,total,stackCount,movementRange,legalMoves,adjacent,attackPreview,attack,pushPreview,push,move,endTurn,chooseCpuAction,cpuAct,stateSummary,ownerHome};
