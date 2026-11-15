@@ -35,12 +35,12 @@ if(!own.length||!foes.length)return null;
 let candidates=[];
 for(const u of own){
  for(const t of foes){if(adjacent(u,t)){let p=attackPreview(s,u,t);if(p.ok&&p.damage>0)candidates.push({type:'attack',id:u.id,targetId:t.id,score:100+p.damage*35+p.flank*12+(t.hp<=p.damage?100:0)-p.guard*3});}}
- for(const [dx,dy] of [[0,-1],[1,0],[0,1],[-1,0]]){let p=pushPreview(s,u.id,dx,dy);if(p.ok){let edge=p.line.enemies.some(e=>!inside(e.x+dx,e.y+dy));candidates.push({type:'push',id:u.id,dx,dy,score:65+(edge?100:0)+(p.friendlyMass-p.enemyMass)*5});}}
+ for(const [dx,dy] of [[0,-1],[1,0],[0,1],[-1,0]]){let p=pushPreview(s,u.id,dx,dy);if(p.ok){let edge=p.line.enemies.some(e=>!inside(e.x+dx,e.y+dy));let pressure=p.line.enemies.reduce((n,e)=>{let before=Math.min(e.x,W-1-e.x,e.y,H-1-e.y),nx=e.x+dx,ny=e.y+dy,after=inside(nx,ny)?Math.min(nx,W-1-nx,ny,H-1-ny):0;return n+before-after;},0);candidates.push({type:'push',id:u.id,dx,dy,score:30+pressure*12+(edge?160:0)+(p.friendlyMass-p.enemyMass)*2});}}
  for(const dest of legalMoves(s,u)){
   const ox=u.x,oy=u.y,before=Math.min(...foes.map(e=>dist(u,e)));u.x=dest.x;u.y=dest.y;
   const after=Math.min(...foes.map(e=>dist(u,e)));let attackValue=0,pushValue=0,support=0;
   for(const t of foes)if(adjacent(u,t)){let p=attackPreview(s,u,t);if(p.ok&&p.damage>0)attackValue=Math.max(attackValue,p.damage*25+p.flank*8);}
-  for(const [dx,dy] of [[0,-1],[1,0],[0,1],[0,-1],[-1,0]]){let p=pushPreview(s,u.id,dx,dy);if(p.ok)pushValue=Math.max(pushValue,30+(p.line.enemies.some(e=>!inside(e.x+dx,e.y+dy))?70:0));}
+  for(const [dx,dy] of [[0,-1],[1,0],[0,1],[-1,0]]){let p=pushPreview(s,u.id,dx,dy);if(p.ok){let edge=p.line.enemies.some(e=>!inside(e.x+dx,e.y+dy));let pressure=p.line.enemies.reduce((n,e)=>{let before=Math.min(e.x,W-1-e.x,e.y,H-1-e.y),nx=e.x+dx,ny=e.y+dy,after=inside(nx,ny)?Math.min(nx,W-1-nx,ny,H-1-ny):0;return n+before-after;},0);pushValue=Math.max(pushValue,20+pressure*10+(edge?80:0));}}
   for(const ally of own)if(ally.id!==u.id&&adjacent(u,ally))support++;
   const center=10-(Math.abs(dest.x-5)+Math.abs(dest.y-5));
   u.x=ox;u.y=oy;
