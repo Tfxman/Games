@@ -101,7 +101,7 @@ $('turn').textContent=S.phase==='deploy'?'Deployment · Player '+S.player:S.phas
 $('status').textContent=S.phase==='deploy'?'Place '+(E.MAX-S.placed[S.player])+' more pieces in your home zone.':S.phase==='over'?'Player '+S.winner+' wins by eliminating the opposing force.':(S.player==='A'?'Player A':'Player B')+' · '+S.ap+' action points remaining.';
 $('aCount').textContent=E.total(S,'A')+' / 24';$('bCount').textContent=E.total(S,'B')+' / 24';$('ap').textContent=S.phase==='play'?S.ap:'—';$('round').textContent=S.round;
 $('placed').textContent='Placed: '+S.placed[S.player]+' / 24';$('finishDeploy').disabled=S.placed[S.player]!==24;
-$('autoDeploy').classList.toggle('hidden',S.phase!=='deploy'||tutorialOn||(mode==='cpu'&&S.player!=='B'));
+$('autoDeploy').classList.toggle('hidden',S.phase!=='deploy'||tutorialOn||(mode==='cpu'&&S.player==='B'));
 $('deployPanel').classList.toggle('hidden',S.phase!=='deploy');$('playPanel').classList.toggle('hidden',S.phase!=='play');
 let u=current();$('selectionInfo').textContent=u?'Player '+u.owner+' · '+u.hp+' piece(s) · '+(u.hp===1?'Scout':u.hp===2?'Warrior':'Juggernaut')+' · move '+E.movementRange(u)+' · '+(S.used.includes(u.id)?'already activated':'ready to activate'):'Select one of your unused stacks.';
 $('actionHint').textContent=action==='move'?'Green squares are legal destinations.':action==='attack'?'Red outlined enemies are attackable. Select one to strike.':action==='push'?'Gold outlined enemies can be pushed. Select one to attempt Sumito.':'Select a stack, then choose an action or drag it to a legal square.';
