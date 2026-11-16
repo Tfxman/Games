@@ -2,7 +2,7 @@
 'use strict';
 const HEXBOUND_ENGINE=(function(){
 const W=11,H=11,MAX=36,TEAM_MOVE=24,DIRS=[[1,0],[1,-1],[0,-1],[-1,0],[-1,1],[0,1]];
-const key=(x,y)=>x+','+y,inside=(x,y)=>x>=0&&x<W&&y>=0&&y<H;
+const key=(x,y)=>x+','+y,inside=(x,y)=>x>=0&&x<W&&y>=0&&y<H;\n// Flat-top axial grid: all six neighboring centers are exactly 1.5 units apart.\nconst center=(q,r)=>({x:1.5*q+0.75*r,y:1.5*Math.sqrt(3)*r});
 const dist=(a,b)=>{const q=a.x-b.x,r=a.y-b.y;return (Math.abs(q)+Math.abs(r)+Math.abs(q+r))/2;};
 const dirIndex=(dx,dy)=>DIRS.findIndex(d=>d[0]===Math.sign(dx)&&d[1]===Math.sign(dy));
 const ownerHome=(p,y)=>p==='A'?y<=4:y>=6;
@@ -39,7 +39,7 @@ function rotate(s,id,step){let u=get(s,id);if(!canAct(s,u,1)||![1,-1].includes(s
 function chooseCpuAction(s){let own=s.units.filter(u=>u.hp>0&&u.owner===s.player&&remaining(u)>0),foes=s.units.filter(u=>u.hp>0&&u.owner!==s.player);if(!own.length||!foes.length)return null;let c=[];for(const u of own){for(const t of foes)if(adjacent(u,t)){let p=attackPreview(s,u,t);if(p.ok&&p.kind!=='front'&&(p.damage>0||p.kind==='rear'))c.push({type:'attack',id:u.id,targetId:t.id,score:p.kind==='rear'?300:100+p.damage*30});}for(const [dx,dy] of DIRS){let p=pushPreview(s,u.id,dx,dy);if(p.ok){let edge=p.line.enemies.some(e=>!inside(e.x+dx,e.y+dy));c.push({type:'push',id:u.id,dx,dy,score:70+(edge?180:0)+(p.friendlyMass-p.enemyMass)*3});}}for(const d of legalMoves(s,u)){let ox=u.x,oy=u.y,of=u.facing;u.x=d.x;u.y=d.y;u.facing=d.facing;let best=0;for(const t of foes)if(adjacent(u,t)){let p=attackPreview(s,u,t);if(p.kind==='rear')best=Math.max(best,150);else if(p.kind==='side'&&p.damage)best=Math.max(best,70+p.damage*20);}let nearest=Math.min(...foes.map(t=>dist(u,t)));u.x=ox;u.y=oy;u.facing=of;c.push({type:'move',id:u.id,x:d.x,y:d.y,score:best+(10-nearest)*3-d.d*.1});}}c.sort((a,b)=>b.score-a.score);return c[0]||null;}
 function cpuAct(s){let a=chooseCpuAction(s);if(!a){endTurn(s);return {ok:true,type:'pass'};}if(a.type==='attack')return attack(s,a.id,a.targetId);if(a.type==='push')return push(s,a.id,a.dx,a.dy);return move(s,a.id,a.x,a.y);}
 function stateSummary(s){return {phase:s.phase,player:s.player,round:s.round,teamMove:s.teamMove,teamMoveMax:s.teamMoveMax,placed:{...s.placed},A:total(s,'A'),B:total(s,'B'),winner:s.winner};}
-return {W,H,MAX,TEAM_MOVE,DIRS,inside,createGame,clone,deploy,autoDeploy,finishDeployment,at,get,total,stackCount,movementRange,remaining,legalMoves,adjacent,attackPreview,attack,pushPreview,push,move,split,merge,rotate,endTurn,chooseCpuAction,cpuAct,stateSummary,ownerHome,dirIndex};
+return {W,H,MAX,TEAM_MOVE,DIRS,inside,center,createGame,clone,deploy,autoDeploy,finishDeployment,at,get,total,stackCount,movementRange,remaining,legalMoves,adjacent,attackPreview,attack,pushPreview,push,move,split,merge,rotate,endTurn,chooseCpuAction,cpuAct,stateSummary,ownerHome,dirIndex};
 })();
 root.HEXBOUND_ENGINE=HEXBOUND_ENGINE;
 if(typeof module!=='undefined'&&module.exports)module.exports=HEXBOUND_ENGINE;
