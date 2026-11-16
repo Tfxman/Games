@@ -2,9 +2,11 @@
 'use strict';
 const HEXBOUND_ENGINE=(function(){
 const W=11,H=11,MAX=36,TEAM_MOVE=24,DIRS=[[1,0],[1,-1],[0,-1],[-1,0],[-1,1],[0,1]];
-const key=(x,y)=>x+','+y,inside=(x,y)=>x>=0&&x<W&&y>=0&&y<H;
-// Flat-top axial grid: all six neighboring centers are exactly 1.5 units apart.
-const center=(q,r)=>({x:1.5*q+0.75*r,y:0.75*Math.sqrt(3)*r});
+const key=(x,y)=>x+','+y,inside=(x,y)=>x>=0&&x<W&&y>=0&&y<H&&Math.abs((x-5)+(y-5))<=5;
+// Pointy-left/right hexagon board: axial coordinates centered at (5,5).
+// The six neighbors are exactly one hex diameter's 0.75 ratio apart in x/y,
+// producing a regular, edge-to-edge flat-top hexagonal tessellation.
+const center=(x,y)=>{const q=x-5,r=y-5;return {x:1.5*q+0.75*r,y:0.75*Math.sqrt(3)*r};};
 const dist=(a,b)=>{const q=a.x-b.x,r=a.y-b.y;return (Math.abs(q)+Math.abs(r)+Math.abs(q+r))/2;};
 const dirIndex=(dx,dy)=>DIRS.findIndex(d=>d[0]===Math.sign(dx)&&d[1]===Math.sign(dy));
 const ownerHome=(p,y)=>p==='A'?y<=4:y>=6;
