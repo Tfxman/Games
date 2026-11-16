@@ -2,7 +2,7 @@
 'use strict';
 const HEXBOUND_ENGINE=(function(){
 const W=11,H=11,MAX=36,TEAM_MOVE=24,DIRS=[[1,0],[1,-1],[0,-1],[-1,0],[-1,1],[0,1]];
-const key=(x,y)=>x+','+y,inside=(x,y)=>x>=0&&x<W&&y>=0&&y<H;\n// Flat-top axial grid: all six neighboring centers are exactly 1.5 units apart.\nconst center=(q,r)=>({x:1.5*q+0.75*r,y:1.5*Math.sqrt(3)*r});
+const key=(x,y)=>x+','+y,inside=(x,y)=>x>=0&&x<W&&y>=0&&y<H;\n// Flat-top axial grid: all six neighboring centers are exactly 1.5 units apart.\nconst center=(q,r)=>({x:1.5*q+0.75*r,y:0.75*Math.sqrt(3)*r});
 const dist=(a,b)=>{const q=a.x-b.x,r=a.y-b.y;return (Math.abs(q)+Math.abs(r)+Math.abs(q+r))/2;};
 const dirIndex=(dx,dy)=>DIRS.findIndex(d=>d[0]===Math.sign(dx)&&d[1]===Math.sign(dy));
 const ownerHome=(p,y)=>p==='A'?y<=4:y>=6;
