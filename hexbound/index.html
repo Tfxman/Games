@@ -21,7 +21,7 @@ main{max-width:1500px;margin:auto;padding:12px 18px 30px;display:grid;grid-templ
 .cell.support{outline:3px dashed #efc36c;outline-offset:-5px}
 .unit{width:72%;height:72%;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:clamp(10px,1.5vw,17px);font-weight:900;border:2px solid #ffffffaa;box-shadow:0 3px 9px #0009;position:relative}
 .unit.A{background:linear-gradient(145deg,#22a8df,#086091)}.unit.B{background:linear-gradient(145deg,#e66a70,#9d303b)}
-.unit.used:after{content:"";position:absolute;inset:-5px;border:2px dashed var(--gold);border-radius:50%}.facing{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(17px,2.1vw,25px);line-height:1;color:#fff;text-shadow:0 1px 4px #000;pointer-events:none}
+.unit.used:after{content:"";position:absolute;inset:-5px;border:2px dashed var(--gold);border-radius:50%}.facing{position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:#07111d;display:grid;place-items:center;font-size:13px;line-height:1;color:#fff;text-shadow:0 1px 4px #000;border:1px solid #ffffff99;pointer-events:none}
 .unit small{font-size:8px;position:absolute;bottom:-7px;background:#07111d;border-radius:5px;padding:0 3px;color:#fff}
 .coord{position:absolute;left:3px;top:1px;font-size:8px;color:#8296ae;pointer-events:none}
 .legend{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:.78rem;padding:12px 4px 2px}
@@ -118,7 +118,7 @@ function doCell(x,y){let t=E.at(S,x,y),u=current();if(S.phase==='deploy'){let r=
 if(S.phase!=='play'||S.winner)return;
 if(!u){if(t&&t.owner===S.player){selected=t.id;action=null;render();}return;}
 if(action==='move'){let r=E.move(S,u.id,x,y);if(r.ok){selected=null;action=null;afterAction();}else $('actionHint').textContent='That square is not reachable. Choose a green square.';return;}
-if(action==='attack'){if(t&&t.owner!==S.player){let r=E.attack(S,u.id,t.id);if(r.ok){selected=null;action=null;afterAction();}else $('actionHint').textContent='Attack an adjacent enemy stack.';}return;}
+if(action==='attack'){if(t&&t.owner!==S.player){let r=E.attack(S,u.id,t.id);if(r.ok){selected=null;action=null;afterAction();}else $('actionHint').textContent=r.reason==='cannot-act'?'Not enough movement remaining for this stack or team.':'Attack an adjacent enemy from the side or rear.';}return;}
 if(action==='push'){if(t&&t.owner!==S.player){let dx=Math.sign(x-u.x),dy=Math.sign(y-u.y);let r=E.push(S,u.id,dx,dy);if(r.ok){selected=null;action=null;afterAction();}else{$('actionHint').textContent=r.reason==='not-enough-mass'?'Push failed: your line must have strictly more mass.':r.reason==='blocked'?'Push blocked by a stack behind the enemy line.':r.reason==='insufficient-movement'?'Not enough personal or team movement.':'No valid enemy line in that direction.';render();}}return;}
 if(action==='split'){let dx=Math.sign(x-u.x),dy=Math.sign(y-u.y);if(!t&&E.adjacent(u,{x,y})){let r=E.split(S,u.id,+$('splitAmount').value,dx,dy);if(r.ok){selected=null;action=null;afterAction();}else $('actionHint').textContent='Split needs an empty adjacent square, a stack of at least two, and enough movement.';}else $('actionHint').textContent='Choose an empty adjacent square for the new stack.';return;}
 if(action==='merge'){if(t&&t.owner===S.player){let r=E.merge(S,u.id,t.id);if(r.ok){selected=null;action=null;afterAction();}else $('actionHint').textContent='Merge adjacent friendly stacks up to a total of three pieces; both need movement.';}return;}
