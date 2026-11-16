@@ -32,6 +32,16 @@ test('all six axial directions are adjacent and reversible', () => {
   }
 });
 
+
+test('flat-top board geometry gives every neighboring hex the same spacing', () => {
+  const origin = E.center(5, 5);
+  const distances = E.DIRS.map(([dq, dr]) => {
+    const next = E.center(5 + dq, 5 + dr);
+    return Math.hypot(next.x - origin.x, next.y - origin.y);
+  });
+  for (const distance of distances) assert.ok(Math.abs(distance - 1.5) < 1e-9);
+});
+
 test('both sides can auto-deploy 36 pieces and start a match', () => {
   const s = E.createGame('hotseat');
   assert.equal(E.autoDeploy(s, 'A').ok, true);
