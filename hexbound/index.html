@@ -105,7 +105,7 @@ function render(){board.innerHTML='';for(let y=0;y<E.H;y++)for(let x=0;x<E.W;x++
 $('turn').textContent=S.phase==='deploy'?'Deployment · Player '+S.player:S.phase==='over'?'Match complete':'Round '+S.round+' · Player '+S.player;
 $('status').textContent=S.phase==='deploy'?'Place '+(E.MAX-S.placed[S.player])+' more pieces in your home zone.':S.phase==='over'?'Player '+S.winner+' wins by eliminating the opposing force.':(S.player==='A'?'Player A':'Player B')+' · '+S.teamMove+' team movement remaining.';
 $('aCount').textContent=E.total(S,'A')+' / 36';$('bCount').textContent=E.total(S,'B')+' / 36';$('ap').textContent=S.phase==='play'?S.teamMove+' / '+S.teamMoveMax:'—';$('round').textContent=S.round;
-$('placed').textContent='Placed: '+S.placed[S.player]+' / 36';$('finishDeploy').disabled=S.placed[S.player]!==24;
+$('placed').textContent='Placed: '+S.placed[S.player]+' / '+E.MAX;$('finishDeploy').disabled=S.placed[S.player]!==E.MAX;
 $('autoDeploy').classList.toggle('hidden',S.phase!=='deploy'||tutorialOn||(mode==='cpu'&&S.player==='B'));
 $('deployPanel').classList.toggle('hidden',S.phase!=='deploy');$('playPanel').classList.toggle('hidden',S.phase!=='play');
 let u=current();$('selectionInfo').textContent=u?'Player '+u.owner+' · '+u.hp+' piece(s) · '+(u.hp===1?'Scout':u.hp===2?'Warrior':'Juggernaut')+' · facing '+['N','NE','E','SE','S','SW','W','NW'][u.facing]+' · move '+E.remaining(u)+' / '+E.movementRange(u):'Select one of your unused stacks.';
