@@ -11,15 +11,18 @@ function battle(units) {
   return s;
 }
 
-test('the rectangular board contains all 121 hexes', () => {
+test('the hexagonal board contains 91 playable hexes in 11 rows', () => {
+  const rowCounts = [];
   let count = 0;
   for (let y = 0; y < E.H; y++) {
+    let row = 0;
     for (let x = 0; x < E.W; x++) {
-      assert.equal(E.inside(x, y), true);
-      count++;
+      if (E.inside(x, y)) { row++; count++; }
     }
+    rowCounts.push(row);
   }
-  assert.equal(count, 121);
+  assert.deepEqual(rowCounts, [6,7,8,9,10,11,10,9,8,7,6]);
+  assert.equal(count, 91);
 });
 
 test('all six axial directions are adjacent and reversible', () => {
