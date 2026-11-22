@@ -38,5 +38,5 @@ test('players may deploy anywhere in their half including assigned center-row sp
  assert.ok(E.deploy(s,'A',0,0,1).ok);
  assert.ok(E.deploy(s,'A',-1,1,1).ok);
  assert.ok(E.deploy(s,'B',-1,0,1).ok);
- assert.ok(E.deploy(s,'B',1,-1,1).ok===false);
+ assert.equal(E.deploy(s,'B',1,0,1).ok,false);
 });
