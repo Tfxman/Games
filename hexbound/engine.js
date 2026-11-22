@@ -7,14 +7,14 @@ const hexVertices=(x,y,radius=1)=>Array.from({length:6},(_,i)=>({x:x+radius*Math
 const distance=(a,b)=>Math.max(Math.abs(a.q-b.q),Math.abs(a.r-b.r),Math.abs(a.q+a.r-b.q-b.r));
 const dir=(q,r)=>D.findIndex(d=>d[0]===Math.sign(q)&&d[1]===Math.sign(r));
 const range=u=>u.size===1?5:u.size===2?4:3,remaining=u=>Math.max(0,range(u)-(u.spent||0));
-const home=(p,r)=>p==='A'?r>=1:r<=-1;
+const home=(p,q,r)=>p==='A'?(r>0||(r===0&&q>=0)):(r<0||(r===0&&q<0));
 function createGame(mode='hotseat'){return{mode,phase:'deploy',player:'A',round:1,team:0,units:[],placed:{A:0,B:0},winner:null,log:[],lastEvent:null,nextId:1};}
 const at=(s,q,r)=>s.units.find(u=>u.alive&&u.q===q&&u.r===r)||null,get=(s,id)=>s.units.find(u=>u.id===id)||null;
 const total=(s,p)=>s.units.filter(u=>u.alive&&u.owner===p).reduce((n,u)=>n+u.size,0);
 function note(s,m){s.log.unshift(m);s.log=s.log.slice(0,35);}
 function fresh(s,p,q,r,size,facing){return{id:'u'+s.nextId++,owner:p,q,r,size,facing:facing??(p==='A'?5:2),spent:0,alive:true};}
-function deploy(s,p,q,r,size){if(s.phase!=='deploy'||s.player!==p||!inside(q,r)||!home(p,r)||at(s,q,r)||![1,2,3].includes(size)||s.placed[p]+size>MAX)return{ok:false,reason:'invalid-deployment'};s.units.push(fresh(s,p,q,r,size));s.placed[p]+=size;s.lastEvent={type:'deploy',owner:p,q,r,size};note(s,p+' deployed '+size+' pieces.');return{ok:true};}
-function autoDeploy(s,p){if(s.phase!=='deploy'||s.player!==p)return{ok:false};const a=[];for(let r=-5;r<=5;r++)for(let q=-5;q<=5;q++)if(inside(q,r)&&home(p,r)&&!at(s,q,r))a.push({q,r});a.sort((x,y)=>p==='A'?y.r-x.r||x.q-y.q:x.r-y.r||x.q-y.q);if(a.length<12)return{ok:false};a.slice(0,12).forEach(v=>deploy(s,p,v.q,v.r,3));return{ok:true};}
+function deploy(s,p,q,r,size){if(s.phase!=='deploy'||s.player!==p||!inside(q,r)||!home(p,q,r)||at(s,q,r)||![1,2,3].includes(size)||s.placed[p]+size>MAX)return{ok:false,reason:'invalid-deployment'};s.units.push(fresh(s,p,q,r,size));s.placed[p]+=size;s.lastEvent={type:'deploy',owner:p,q,r,size};note(s,p+' deployed '+size+' pieces.');return{ok:true};}
+function autoDeploy(s,p){if(s.phase!=='deploy'||s.player!==p)return{ok:false};const a=[];for(let r=-5;r<=5;r++)for(let q=-5;q<=5;q++)if(inside(q,r)&&home(p,q,r)&&!at(s,q,r))a.push({q,r});a.sort((x,y)=>p==='A'?y.r-x.r||x.q-y.q:x.r-y.r||x.q-y.q);if(a.length<12)return{ok:false};a.slice(0,12).forEach(v=>deploy(s,p,v.q,v.r,3));return{ok:true};}
 function finishDeployment(s){if(s.phase!=='deploy'||s.placed[s.player]!==MAX)return{ok:false,reason:'force-incomplete'};if(s.player==='A'){s.player='B';note(s,'Player A completed deployment.');return{ok:true};}s.phase='play';s.player='A';s.team=TEAM;s.units.forEach(u=>u.spent=0);note(s,'Deployment complete. Player A begins.');return{ok:true};}
 function legalMoves(s,u){if(!u||!u.alive||u.owner!==s.player||s.phase!=='play')return[];const max=Math.min(remaining(u),s.team),seen=new Set([u.q+','+u.r]),queue=[{q:u.q,r:u.r,d:0,facing:u.facing}],out=[];for(let i=0;i<queue.length;i++){const c=queue[i];if(c.d>=max)continue;for(let k=0;k<6;k++){const q=c.q+D[k][0],r=c.r+D[k][1],key=q+','+r;if(!inside(q,r)||seen.has(key)||at(s,q,r))continue;seen.add(key);const n={q,r,d:c.d+1,facing:k};out.push(n);queue.push(n);}}return out;}
 function endTurn(s){if(s.phase==='over')return;s.player=s.player==='A'?'B':'A';if(s.player==='A')s.round++;s.team=TEAM;s.units.forEach(u=>{if(u.alive)u.spent=0;});note(s,'Player '+s.player+' begins round '+s.round+'.');}
