@@ -1,4 +1,5 @@
 (function(root){'use strict';
+const HEXBOUND_ENGINE=(function(){
 const R=5,MAX=36,TEAM=24,D=[[1,0],[1,-1],[0,-1],[-1,0],[-1,1],[0,1]];
 const inside=(q,r)=>Number.isInteger(q)&&Number.isInteger(r)&&Math.abs(q)<=R&&Math.abs(r)<=R&&Math.abs(q+r)<=R;
 const center=(q,r)=>({x:Math.sqrt(3)*(q+r/2),y:1.5*r});
