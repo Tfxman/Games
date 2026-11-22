@@ -37,6 +37,7 @@ test('players may deploy anywhere in their half including assigned center-row sp
  const s=E.createGame();
  assert.ok(E.deploy(s,'A',0,0,1).ok);
  assert.ok(E.deploy(s,'A',-1,1,1).ok);
+ s.player='B';
  assert.ok(E.deploy(s,'B',-1,0,1).ok);
  assert.equal(E.deploy(s,'B',1,0,1).ok,false);
 });
