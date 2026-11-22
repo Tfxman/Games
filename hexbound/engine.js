@@ -3,6 +3,7 @@ const HEXBOUND_ENGINE=(function(){
 const R=5,MAX=36,TEAM=24,D=[[1,0],[1,-1],[0,-1],[-1,0],[-1,1],[0,1]];
 const inside=(q,r)=>Number.isInteger(q)&&Number.isInteger(r)&&Math.abs(q)<=R&&Math.abs(r)<=R&&Math.abs(q+r)<=R;
 const center=(q,r)=>({x:Math.sqrt(3)*(q+r/2),y:1.5*r});
+const hexVertices=(x,y,radius=1)=>Array.from({length:6},(_,i)=>({x:x+radius*Math.cos((i+.5)*Math.PI/3),y:y+radius*Math.sin((i+.5)*Math.PI/3)}));
 const distance=(a,b)=>Math.max(Math.abs(a.q-b.q),Math.abs(a.r-b.r),Math.abs(a.q+a.r-b.q-b.r));
 const dir=(q,r)=>D.findIndex(d=>d[0]===Math.sign(q)&&d[1]===Math.sign(r));
 const range=u=>u.size===1?5:u.size===2?4:3,remaining=u=>Math.max(0,range(u)-(u.spent||0));
@@ -30,6 +31,6 @@ function push(s,id,dq,dr){const a=get(s,id);if(!can(s,a))return{ok:false,reason:
 function split(s,id,size,dq,dr){const u=get(s,id);if(!can(s,u)||u.size<2||![1,2].includes(size)||size>=u.size||s.team<2||!D.some(d=>d[0]===dq&&d[1]===dr)||!inside(u.q+dq,u.r+dr)||at(s,u.q+dq,u.r+dr))return{ok:false,reason:'invalid-split'};u.size-=size;u.spent++;const v=fresh(s,u.owner,u.q+dq,u.r+dr,size,dir(dq,dr));v.spent=1;s.units.push(v);s.team-=2;s.lastEvent={type:'split',id,newId:v.id,size};note(s,'Stack split into '+u.size+' and '+v.size+'.');return{ok:true,event:s.lastEvent};}
 function merge(s,id,tid){const u=get(s,id),v=get(s,tid);if(!can(s,u)||!v||!can(s,v)||u.id===v.id||u.owner!==v.owner||!adjacent(u,v)||u.size+v.size>3||s.team<2)return{ok:false,reason:'invalid-merge'};u.size+=v.size;u.spent=Math.max(u.spent,v.spent)+1;v.alive=false;v.size=0;s.team-=2;s.lastEvent={type:'merge',id,removed:tid,size:u.size};note(s,'Friendly stacks merged.');return{ok:true,event:s.lastEvent};}
 function rotate(s,id,step){const u=get(s,id);if(!can(s,u)||![1,-1].includes(step))return{ok:false,reason:'cannot-rotate'};u.facing=(u.facing+step+6)%6;return spend(s,[u],1,{type:'rotate',id,facing:u.facing});}
-return{R,MAX,TEAM,D,inside,center,distance,range,remaining,home,createGame,at,get,total,deploy,autoDeploy,finishDeployment,legalMoves,endTurn,move,adjacent,attackPreview,attack,pushPreview,push,split,merge,rotate};
+return{R,MAX,TEAM,D,inside,center,hexVertices,distance,range,remaining,home,createGame,at,get,total,deploy,autoDeploy,finishDeployment,legalMoves,endTurn,move,adjacent,attackPreview,attack,pushPreview,push,split,merge,rotate};
 })();root.HEXBOUND_ENGINE=HEXBOUND_ENGINE;if(typeof module!=='undefined'&&module.exports)module.exports=HEXBOUND_ENGINE;
 })(typeof globalThis!=='undefined'?globalThis:this);
