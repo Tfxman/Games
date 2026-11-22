@@ -23,3 +23,20 @@ test('hex tile edges exactly meet in all six axial directions',()=>{
   }
  }
 });
+
+test('deployment territories partition the entire board into balanced halves',()=>{
+ let a=0,b=0;
+ for(let q=-5;q<=5;q++)for(let r=-5;r<=5;r++)if(E.inside(q,r)){
+  const ha=E.home('A',q,r),hb=E.home('B',q,r);
+  assert.notEqual(ha,hb,'every hex belongs to exactly one deployment half');
+  if(ha)a++;else b++;
+ }
+ assert.deepEqual([a,b],[46,45]);
+});
+test('players may deploy anywhere in their half including assigned center-row spaces',()=>{
+ const s=E.createGame();
+ assert.ok(E.deploy(s,'A',0,0,1).ok);
+ assert.ok(E.deploy(s,'A',-1,1,1).ok);
+ assert.ok(E.deploy(s,'B',-1,0,1).ok);
+ assert.ok(E.deploy(s,'B',1,-1,1).ok===false);
+});
