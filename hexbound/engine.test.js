@@ -10,3 +10,16 @@ test('front attacks are illegal and cost nothing',()=>{const s=battle([{owner:'A
 test('push requires greater mass and advances the line',()=>{let s=battle([{owner:'A',q:0,r:0,size:2},{owner:'B',q:1,r:0,size:2}]);assert.equal(E.pushPreview(s,'u1',1,0).reason,'not-enough-mass');s=battle([{owner:'A',q:-1,r:0,size:2},{owner:'A',q:0,r:0,size:2},{owner:'B',q:1,r:0,size:1}]);assert.ok(E.push(s,'u2',1,0).ok);assert.equal(s.units[1].q,1);assert.equal(s.units[2].q,2);});
 test('split and merge preserve total pieces',()=>{const s=battle([{owner:'A',q:0,r:0,size:3},{owner:'A',q:1,r:0,size:1}]);assert.ok(E.split(s,'u1',1,0,1).ok);assert.equal(E.total(s,'A'),4);assert.ok(E.merge(s,'u1','u2').ok);assert.equal(E.total(s,'A'),4);});
 test('axial centers are symmetric around the board center',()=>{for(let q=-5;q<=5;q++)for(let r=-5;r<=5;r++)if(E.inside(q,r)){const a=E.center(q,r),b=E.center(-q,-r);assert.ok(Math.abs(a.x+b.x)<1e-9&&Math.abs(a.y+b.y)<1e-9);}});
+
+test('hex tile edges exactly meet in all six axial directions',()=>{
+ const radius=1,eps=1e-9;
+ for(let q=-5;q<=5;q++)for(let r=-5;r<=5;r++)if(E.inside(q,r)){
+  const a=E.center(q,r),av=E.hexVertices(a.x,a.y,radius);
+  for(const [dq,dr] of E.D)if(E.inside(q+dq,r+dr)){
+   const b=E.center(q+dq,r+dr),bv=E.hexVertices(b.x,b.y,radius);
+   const angle=Math.atan2(b.y-a.y,b.x-a.x);
+   const shared=[angle-Math.PI/6,angle+Math.PI/6].map(theta=>({x:a.x+radius*Math.cos(theta),y:a.y+radius*Math.sin(theta)}));
+   for(const p of shared)assert.ok(Math.min(...bv.map(v=>Math.hypot(v.x-p.x,v.y-p.y)))<eps, 'neighboring hexagons must share both edge vertices');
+  }
+ }
+});
