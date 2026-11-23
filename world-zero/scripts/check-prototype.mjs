@@ -12,18 +12,18 @@ const requiredIds = [
   'pointBuy', 'rollCheck', 'startCombat', 'attackBtn', 'defendBtn', 'fleeBtn'
 ];
 for (const id of requiredIds) {
-  assert.match(html, new RegExp('id=["\\']' + id + '["\\']'), `Missing required UI element: ${id}`);
+  assert.ok(html.includes('id="' + id + '"') || html.includes("id='" + id + "'"), 'Missing required UI element: ' + id);
 }
 
-const scripts = [...html.matchAll(/<script>([\\s\\S]*?)<\\/script>/gi)].map(m => m[1]);
+const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/gi)].map(m => m[1]);
 assert.ok(scripts.length >= 2, 'Expected the base app script and Phase 2 rules script');
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'world-zero-check-'));
 try {
   scripts.forEach((source, index) => {
-    const file = path.join(tempDir, `inline-${index}.js`);
+    const file = path.join(tempDir, 'inline-' + index + '.js');
     fs.writeFileSync(file, source);
     const result = spawnSync(process.execPath, ['--check', file], { encoding: 'utf8' });
-    assert.equal(result.status, 0, `Inline script ${index} failed syntax check:\\n${result.stderr}`);
+    assert.equal(result.status, 0, 'Inline script ' + index + ' failed syntax check:\n' + result.stderr);
   });
 } finally {
   fs.rmSync(tempDir, { recursive: true, force: true });
@@ -39,4 +39,4 @@ assert.equal(modifier(15), 2);
 const cost = { 8: 0, 9: 1, 10: 2, 11: 3, 12: 4, 13: 5, 14: 7, 15: 9 };
 assert.equal(cost[15], 9);
 assert.equal(cost[8] + cost[10] * 5, 10);
-console.log(`WORLD ZERO prototype checks passed (${requiredIds.length} UI anchors, ${scripts.length} inline scripts).`);
+console.log('WORLD ZERO prototype checks passed (' + requiredIds.length + ' UI anchors, ' + scripts.length + ' inline scripts).');
