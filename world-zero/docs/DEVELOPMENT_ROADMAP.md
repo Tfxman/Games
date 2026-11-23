@@ -1,66 +1,56 @@
-# Development Roadmap
+# Development Roadmap — Offline WORLD ZERO
 
-## Phase 1 — Foundation and interface
-- [x] Create project area and initial design documents
-- [x] Build a navigable browser prototype
-- [x] Add character, inventory, map, quests, journal, and language views
-- [x] Add local save and responsive layout
-- [ ] Migrate interface into React + TypeScript
-- [ ] Accessibility and browser compatibility pass
+## Phase 1 — Browser foundation
+- [x] Build a navigable static browser game
+- [x] Add character, abilities, inventory, map, quests, journal, and Japanese learning views
+- [x] Add local campaign save and responsive layout
+- [ ] Accessibility and cross-browser compatibility pass
 
-## Phase 2 — Character system and solo rules
+## Phase 2 — Character system and deterministic rules
 - [x] Six attributes, modifiers, and 27-point-buy allocation
 - [x] Five classes with distinct starting resources and equipment
-- [x] Class-specific basic actions, spells, and unlockable techniques
-- [x] Mana/stamina costs, healing, defense, wards, poison, stun, and escape
-- [x] D20 attack rolls against enemy armor class
-- [x] Enemy turns, damage, defeat, and recovery
-- [x] XP and automatic level progression
-- [x] HP growth and class ability unlocks at milestone levels
-- [x] No level-up mana/stamina increases, full refill, gold, or supply bundle
-- [x] Branching first chapter with quest outcomes and journal state
-- [ ] Skill proficiency, advantage/disadvantage, robust status-effect timing, and item effects
-- [ ] Extract rules into tested TypeScript modules
-- [ ] Move authoritative dice, combat, inventory, and progression server-side
+- [x] Class-specific moves, spells, and unlockable techniques
+- [x] Mana/stamina costs, healing, defense, wards, poison, and stun
+- [x] Deterministic attribute challenges; no dice or random rolls
+- [x] Fixed combat damage and enemy turns
+- [x] XP, level progression, and class ability unlocks
+- [x] Branching campaign with quest outcomes and journal state
+- [ ] Balance challenge thresholds and combat damage through playtesting
+- [ ] Extract the rules engine into tested modules
 
-**Current status:** checked mechanics are implemented for offline solo play in `index.html`. They remain browser-side and are not suitable as multiplayer authority.
+## Phase 3 — Japanese choice-based learning
+- [x] Fixed-choice Japanese responses; no typed answers or AI input
+- [x] Multiple accepted variants and contextual distractors in dialogue
+- [x] Four adaptive immersion starting levels
+- [x] Flashcards with readings, meanings, examples, and local review tracking
+- [x] Hover/tap translations for scene descriptions, headings, story choices, and interface labels
+- [ ] Expand translations to every remaining journal, combat, and dynamic status message
+- [ ] Add more grammar-focused choice patterns (particles, verb forms, politeness, questions)
+- [ ] Expand the vocabulary deck whenever new story scenes are added
+- [ ] Add optional audio assets and offline listening practice
 
-## Phase 3 — AI Dungeon Master
-- [x] Secure server-side OpenAI API bridge; API key stays in server environment
-- [x] Structured scene/action response contract
-- [x] AI narration reacts to free-form player actions
-- [x] Japanese dialogue, translation, and cautious writing feedback
-- [x] Suggested next actions and recent-turn context
-- [x] Bound input, request size, per-process rate, and request duration
-- [ ] Authentication and durable per-user rate limiting
-- [ ] Let validated DM proposals update world/quest state through engine-approved actions
-- [ ] NPC memory retrieval and persistent campaign summaries
-- [ ] Deploy the endpoint to a production host
+## Phase 4 — Campaign content and balance
+- [x] Three chapters and fourteen authored endings
+- [x] Watchtower, ferry, and sealed-shrine routes
+- [x] Hidden quests, relationship consequences, and failure states
+- [ ] Add more scenes, NPC conversations, and meaningful wrong-answer consequences
+- [ ] Add more varied context exercises and recurring vocabulary
+- [ ] Playtest each branch and challenge with different character builds
 
-## Phase 4 — Japanese learning engine
-- [x] Initial text-only Japanese feedback and confidence estimate from AI
-- [ ] Track vocabulary, grammar, reading, listening, and independent production separately
-- [ ] Build evidence over multiple sessions before assigning a stable level
-- [ ] Adapt dialogue complexity and support using persistent learner profiles
-- [ ] Add contextual review and spaced retrieval
-- [ ] Add audio and listening assessment
+## Phase 5 — Release quality
+- [ ] Accessibility, keyboard navigation, and touch usability pass
+- [ ] Browser compatibility and local-save recovery
+- [ ] Full bilingual editorial review by a Japanese-language expert
+- [ ] Public playtest and bug-fix cycle
 
-## Phase 5 — World state and persistence
-- [ ] Persist campaigns, NPCs, locations, factions, quests, and events
-- [ ] Add consequence rules and map discovery
-- [ ] Save/resume across devices and session recap
+## Product guardrails
 
-## Phase 6 — Multiplayer
-- [ ] Authentication, invitations, campaign roles, and permissions
-- [ ] Synchronize party and encounter state safely
-- [ ] Support 2–4 players with distinct language profiles in one shared scene
+- The browser game remains offline and does not call an AI model or external API.
+- Story outcomes and challenges are authored and deterministic.
+- Every dialogue scene should include multiple natural accepted answers and several plausible incorrect choices.
+- Japanese translations must be authored and reviewed, not fabricated by a live service.
+- No dice, hidden random checks, or free-form answer box should be reintroduced without an explicit design change.
 
-## Phase 7 — Content, balance, and release
-- [ ] Complete a longer campaign with multiple regions and dungeon encounters
-- [ ] Add companions, crafting, equipment effects, and more enemy types
-- [ ] Playtest balance, accessibility, security, and performance
-- [ ] Deploy production app and player onboarding
+## Current milestone
 
-## Release definition
-
-The current milestone is an **AI-connected solo vertical slice**, not a public beta. A public beta requires engine-approved dynamic world changes, validated longitudinal language assessment, persistent world state, server-authoritative rules, authentication, multiplayer testing, production hosting, and a complete content pass.
+An offline single-player campaign prototype with fixed-choice Japanese dialogue, deterministic ability challenges, flashcards, and bilingual hover/tap support. The next content milestone is broader Japanese translation coverage and more scene-specific language exercises.
