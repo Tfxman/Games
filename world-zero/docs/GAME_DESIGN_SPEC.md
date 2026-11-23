@@ -61,11 +61,13 @@ Track these separately for each player:
 
 Use an internal progression scale from 0 (new learner) to 5 (advanced). It is inspired by broad proficiency concepts but is not an official JLPT score or certification.
 
-Hybrid immersion stages:
-1. Context and strong support for unfamiliar phrases.
-2. Partial translations and vocabulary highlighting.
-3. Japanese-first dialogue with optional hints.
-4. Predominantly Japanese interactions with translation available on request.
+Hybrid immersion stages (player-selectable starting point, then adaptive):
+1. Guided: generous English context and strong clues.
+2. Supported: Japanese with partial support.
+3. Balanced: Japanese-first with hints when needed.
+4. Full immersion: Japanese-first with minimal support.
+
+The game tracks best Japanese, understandable Japanese, and poor communication separately. Strong independent Japanese raises immersion; understandable Japanese and successful gestures also raise it more gradually; repeated poor results lower immersion and restore contextual support. Gestures resolve with d20 + Wisdom and are capped at the good outcome tier. Incorrect Japanese can be repaired with d20 + Intelligence; a successful repair earns a good outcome, never the best outcome. Clear Japanese production earns the best outcome. Communication outcomes influence NPC trust and later narrative options.
 
 Assessment must be based on observable evidence: recognition, independent production, comprehension in a new context, and successful communication. Do not infer mastery from participation alone.
 
