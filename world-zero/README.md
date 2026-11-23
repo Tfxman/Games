@@ -29,9 +29,9 @@ The deployment workflow publishes the contents of this folder when changes are p
 
 After GitHub Pages is enabled for this repository, the game URL will be:
 
-https://tfxman.github.io/Games/
+https://tfxman.github.io/Games/world-zero/
 
-To enable it: open the repository's **Settings → Pages**, set **Build and deployment → Source** to **GitHub Actions**, and save. Then open **Actions** and wait for **Deploy WORLD ZERO to GitHub Pages** to finish successfully. The workflow may also be started manually from the Actions tab.
+To enable it: open the repository's **Settings → Pages**, set **Build and deployment → Source** to **GitHub Actions**, and save. Then open **Actions** and wait for **pages build and deployment** to finish successfully. The workflow may also be started manually from the Actions tab.
 
 The hosted static version supports the scripted single-player game and saves progress in that browser. The AI Dungeon Master panel requires a separately deployed, secured backend; it will not work on the static GitHub Pages site by itself. Do not put an API key in browser code or GitHub Pages files.
 
