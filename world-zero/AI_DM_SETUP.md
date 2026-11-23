@@ -17,7 +17,7 @@ Requires Node.js 22 or later and an OpenAI API key with API billing enabled.
 
 1. Create an API key in the OpenAI platform.
 2. In a terminal, enter the `world-zero` folder.
-3. Set the key as an environment variable (PowerShell example):
+3. Either copy `.env.example` to `.env` and replace the placeholder key, or set the key as an environment variable (shell environment variables take precedence). PowerShell example:
 
    ```powershell
    $env:OPENAI_API_KEY="your-key"
