@@ -1,6 +1,6 @@
-# WORLD ZERO — Playable Prototype Rules v0.2
+# WORLD ZERO — Playable Prototype Rules v0.3
 
-These rules support the current offline solo campaign. They are original lightweight RPG rules and remain subject to playtesting.
+These original lightweight rules support the offline solo campaign and remain subject to playtesting.
 
 ## Attributes and checks
 
@@ -22,7 +22,7 @@ Each class has two basic actions and three milestone techniques. Class technique
 
 ## Combat
 
-- Combat is turn-based. Player actions resolve before the enemy retaliation.
+- Combat is turn-based. Player actions resolve before enemy retaliation.
 - Attacks roll d20 + the relevant class attribute modifier against enemy AC.
 - A hit deals a random die based on the move's power plus a positive relevant attribute modifier. Natural 20s add a bonus die.
 - Defensive moves reduce the next incoming damage; wards absorb damage; healing restores HP; poison deals damage on subsequent enemy turns; escape ends combat.
@@ -33,20 +33,21 @@ Each class has two basic actions and three milestone techniques. Class technique
 
 The XP threshold is current level × 100. Excess XP carries over. On each level:
 - Maximum HP increases by 2 (3 for Warrior).
-- Maximum mana increases by 2.
-- Maximum stamina increases by 2.
-- HP, mana, and stamina are fully restored.
-- The character receives gold equal to 10 + (new level × 2), plus a supply bundle.
-- Class techniques become available at milestone levels 2, 3, and 5.
+- The character recovers HP equal to that increase, but does not receive a full refill.
+- Class techniques become available at milestone levels 2, 3, and 5; the player chooses when to learn each technique from the Abilities screen.
 
-## Chapter 1
+Leveling does **not** increase mana or stamina, refill those resources, grant gold, or grant a supply bundle. Gold and items can still be earned through story and encounter rewards.
 
-The first chapter follows the stranger's arrival in Kodama Forest, meeting Hana, discovering a missing child, following clues, confronting or calming the shrine guardian, and returning the child. The silver bell and social choices allow non-combat resolution paths. Story branches currently use scripted outcomes.
+## AI Dungeon Master
+
+The AI DM receives the player's free-form action, a bounded snapshot of character/scene/quest details, and a short recent history. It returns story narration, Japanese dialogue with translation, formative language feedback, a cautious text-only estimate, and suggested actions. The local Node server calls the OpenAI Responses API using a server-side environment key.
+
+The AI is not authoritative. It must not award XP, gold, items, levels, stats, decide dice, resolve combat, or commit quest/world changes. The current prototype displays AI suggestions but still relies on scripted story choices for main-quest progression. Future dynamic story actions must be validated and applied by the game engine.
 
 ## Language learning
 
-The prototype records vocabulary practice and rewards Japanese text attempts. It does not yet evaluate grammar, translation, comprehension, pronunciation, or independent language proficiency. The production language engine must assess these separately and adapt the DM's dialogue without allowing the model to alter game rules.
+AI feedback evaluates only the Japanese text actually supplied. English-only actions and gestures provide no Japanese production evidence. A single sample is not a reliable placement test; estimates are formative and should remain low-confidence until supported by multiple examples. Text interaction does not assess listening or pronunciation.
 
 ## Technical authority
 
-All current state and dice rolls run in the browser and local storage. They are suitable for solo experimentation only. Production multiplayer requires server-side validation and append-only campaign event records.
+All current game state and dice rolls remain in browser local storage. The local server protects the OpenAI key from browser exposure, but it is intended for local development, not public deployment. Production multiplayer requires authentication, server-side validation, persistent campaign event records, and durable rate limits.
