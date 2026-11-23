@@ -4,7 +4,7 @@ A browser-based, isekai-inspired fantasy RPG where Japanese is learned through s
 
 ## Current status
 
-**Playable single-player branching campaign prototype, with Chapter 1 and a Chapter 2 opening route.** The browser game can be hosted as a static site on GitHub Pages. The optional AI Dungeon Master requires a separate server and a privately configured OpenAI API key; it does not run on GitHub Pages.
+**Playable single-player branching campaign prototype, with three story chapters and 14 authored endings.** The browser game can be hosted as a static site on GitHub Pages. The optional AI Dungeon Master requires a separate server and a privately configured OpenAI API key; it does not run on GitHub Pages.
 
 Implemented:
 - Character creation with five classes, species/background choices, six attributes, and 27-point buy
@@ -13,11 +13,14 @@ Implemented:
 - Mana and stamina costs for abilities
 - XP progression; on level-up, +2 max HP (+3 for Warriors), +1 max mana, and +1 max stamina, with those amounts restored
 - Class ability unlocks at levels 2, 3, and 5
-- Expanded branching story across the opening chapter and Chapter 2, with three distinct route openings (watchtower, ferry, and sealed shrine), persistent choices, relationship changes, and multiple quest outcomes
+- Expanded branching campaign through Chapter 3 and the Lantern Archive, with watchtower, ferry, and sealed-shrine routes, persistent relationships, quest outcomes, and 14 authored endings
 - Choices and Japanese comprehension guesses affect later relationships, checks, descriptions, and available options; mistakes are allowed to shape the narrative
 - Meaningful failure states: failed investigations, abandoned or failed quests, lost NPC trust, resource loss, and campaign-ending defeat after three combat defeats
 - Prerequisite-aware choices: unavailable story options and unaffordable combat moves are hidden; healing, wards, and ranged attacks respect current HP, active wards, and ammunition
-- Context-first Japanese dialogue: infer meaning from gestures, tone, and scene clues; incorrect guesses change NPC reactions and relationship state rather than triggering immediate translations
+- Adaptive Japanese immersion with four starting levels (Guided, Supported, Balanced, Full immersion), adjusted from accumulated communication results
+- Two response modes for dialogue: type Japanese or choose a gesture; exact Japanese is the best tier, partial Japanese or a successful gesture earns a good tier, and poor communication can produce the worst result
+- d20 + Wisdom gesture checks; d20 + Intelligence can help repair an incorrect Japanese response; outcomes affect trust, later reactions, and immersion level
+- Context-first Japanese dialogue: infer meaning from gestures, tone, and scene clues; mistakes change NPC reactions and relationship state rather than triggering immediate translations
 - Encounter lock: while an enemy is active, story choices, travel, and free-form actions are blocked; required fights cannot be escaped
 - AI Dungeon Master integration for free-form actions, adaptive Japanese dialogue, translation, Japanese writing feedback, cautious text-only proficiency estimates, and suggested next actions (when connected to a configured backend)
 - Recent AI DM turns and latest writing assessment saved in the local campaign notebook
@@ -62,7 +65,7 @@ Do not open `index.html` directly with `file://`; the AI DM needs the server end
 
 ## Important limitations
 
-This is a solo prototype, not a production-ready AI multiplayer game. The AI can narrate reactions and suggest next actions, but it does not yet change authoritative quest/world state or resolve game mechanics. Scripted chapter choices still control the main quest branches. Japanese feedback is text-only and formative; a single message is not a reliable proficiency placement test. There is no speech recognition, listening assessment, login, persistent server database, online multiplayer, or server-authoritative combat. Browser save data and rolls can be modified by the player.
+This is a solo prototype, not a production-ready AI multiplayer game. The AI can narrate reactions and suggest next actions, but it does not yet change authoritative quest/world state or resolve game mechanics. Scripted chapter choices still control the main quest branches. Scripted Japanese response scoring is phrase-pattern based and formative; the AI writing estimate is text-only; a single message is not a reliable proficiency placement test. There is no speech recognition, listening assessment, login, persistent server database, online multiplayer, or server-authoritative combat. Browser save data and rolls can be modified by the player.
 
 The local Node server includes basic input limits, same-origin checks, a per-process request limit, and timeouts. It is intended for local development only. Public AI deployment requires authentication, durable rate limits, abuse monitoring, budget controls, HTTPS, and persistent campaign storage.
 
