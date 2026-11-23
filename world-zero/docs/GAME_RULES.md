@@ -58,11 +58,15 @@ The AI DM receives the player's free-form action, a bounded snapshot of characte
 
 The AI is not authoritative. It must not award XP, gold, items, levels, stats, decide dice, resolve combat, or commit quest/world changes. The current prototype displays AI suggestions but still relies on scripted story choices for main-quest progression. Future dynamic story actions must be validated and applied by the game engine.
 
-## Language learning
+## Language learning and adaptive immersion
 
-Scripted dialogue presents Japanese without an immediate translation. Players infer meaning from gestures, expression, tone, and scene context, then choose an interpretation. Incorrect guesses are allowed and affect relationship state and later checks; the immediate response is another action or contextual reaction, not a direct translation. Meaning can be pieced together from subsequent events.
+The language notebook lets the player choose a starting immersion level: Guided (0), Supported (1), Balanced (2), or Full immersion (3). This is a starting preference, not a fixed difficulty. The campaign adjusts exposure using accumulated communication results. Clear independent Japanese production raises the immersion level fastest; understandable partial Japanese or successful gestures also advance it; poor communication lowers the level and restores more support. The scale is a game adaptation setting, not an official JLPT score.
 
-AI feedback evaluates only the Japanese text actually supplied. English-only actions and gestures provide no Japanese production evidence. A single sample is not a reliable placement test; estimates are formative and should remain low-confidence until supported by multiple examples. Text interaction does not assess listening or pronunciation.
+Each dialogue offers two response paths: type a Japanese answer or select a contextual gesture. Exact, appropriate Japanese earns the best communication tier. Understandable partial Japanese earns a good tier. A wrong phrase triggers a d20 + Intelligence repair check; success lets the character infer and clarify the intended meaning for a good tier, while failure is poor. Gestures use d20 + Wisdom (with a small situational bonus for choosing the gesture that fits the moment); a successful appropriate gesture earns a good tier, while a poor gesture has the worst result. Gesture success never outranks clear Japanese production.
+
+Communication tiers affect NPC trust, reactions, journal history, and future immersion support. The original interpretation quiz remains optional context practice. A wrong guess is not instantly translated; the NPC's behavior and later events provide feedback. Japanese text checks are pattern-based in this prototype, not a full natural-language assessment. It does not yet assess pronunciation or actual listening.
+
+AI feedback evaluates only the Japanese text actually supplied. English-only actions and gestures provide no Japanese production evidence. A single sample is not a reliable placement test; estimates are formative and should remain low-confidence until supported by multiple examples.
 
 ## Technical authority
 
