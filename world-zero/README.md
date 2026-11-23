@@ -4,7 +4,7 @@ A browser-based, isekai-inspired fantasy RPG where Japanese is learned through s
 
 ## Current status
 
-**Playable single-player Chapter 1 prototype.** The browser game can be hosted as a static site on GitHub Pages. The optional AI Dungeon Master requires a separate server and a privately configured OpenAI API key; it does not run on GitHub Pages.
+**Playable single-player branching campaign prototype, with Chapter 1 and a Chapter 2 opening route.** The browser game can be hosted as a static site on GitHub Pages. The optional AI Dungeon Master requires a separate server and a privately configured OpenAI API key; it does not run on GitHub Pages.
 
 Implemented:
 - Character creation with five classes, species/background choices, six attributes, and 27-point buy
@@ -13,8 +13,11 @@ Implemented:
 - Mana and stamina costs for abilities
 - XP progression; on level-up, +2 max HP (+3 for Warriors), +1 max mana, and +1 max stamina, with those amounts restored
 - Class ability unlocks at levels 2, 3, and 5
-- Branching Chapter 1 story, Hana, missing-child quest, forest clues, shrine guardian, and multiple resolutions
-- Context-first Japanese dialogue: infer meaning from gestures and scene clues, choose a guess, and learn the meaning after responding
+- Expanded branching story across the opening chapter and Chapter 2, with three distinct route openings (watchtower, ferry, and sealed shrine), persistent choices, relationship changes, and multiple quest outcomes
+- Choices and Japanese comprehension guesses affect later relationships, checks, descriptions, and available options; mistakes are allowed to shape the narrative
+- Meaningful failure states: failed investigations, abandoned or failed quests, lost NPC trust, resource loss, and campaign-ending defeat after three combat defeats
+- Prerequisite-aware choices: unavailable story options and unaffordable combat moves are hidden; healing, wards, and ranged attacks respect current HP, active wards, and ammunition
+- Context-first Japanese dialogue: infer meaning from gestures, tone, and scene clues; incorrect guesses change NPC reactions and relationship state rather than triggering immediate translations
 - Encounter lock: while an enemy is active, story choices, travel, and free-form actions are blocked; required fights cannot be escaped
 - AI Dungeon Master integration for free-form actions, adaptive Japanese dialogue, translation, Japanese writing feedback, cautious text-only proficiency estimates, and suggested next actions (when connected to a configured backend)
 - Recent AI DM turns and latest writing assessment saved in the local campaign notebook
