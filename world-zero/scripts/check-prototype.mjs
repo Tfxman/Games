@@ -53,7 +53,7 @@ assert.ok(!html.includes('supply bundle'), 'Level-up UI must not promise a suppl
 assert.ok(!html.includes('maximum mana, +2 maximum stamina'), 'Level-up UI must not increase mana/stamina');
 assert.ok(html.includes('function interpretation('), 'Dialogue must offer contextual interpretation guesses');
 assert.ok(html.includes('if(state.enemy)') && html.includes('activeChoices'), 'Active combat must lock story choices');
-assert.ok(html.includes('free-form actions are unavailable until this foe is defeated'), 'Combat lock must be visible to the player');
+assert.ok(html.includes('Resolve the encounter before taking story actions'), 'Combat lock must be visible to the player');
 assert.ok(html.includes('state.defeats>=3') && html.includes('campaignFailed'), 'Repeated defeat must be able to end the campaign');
 assert.ok(html.includes('activeChoices.filter(x=>!x.show||x.show())'), 'Story choices with unmet requirements must be hidden');
 assert.ok(html.includes('function interpretation(options,correct,meaning,clue,onGuess)'), 'Dialogue guesses must have persistent consequences');
@@ -66,7 +66,12 @@ assert.ok(html.includes('function finishEnding(id)') && html.includes('else if(n
 assert.ok(html.includes('LANGUAGE_LINES') && html.includes('function updateLanguageEvidence'), 'Dialogue must include structured Japanese and gesture response data');
 assert.ok(html.includes("die(20)+mod(state.stats.Wisdom)") && html.includes("die(20)+mod(state.stats.Intelligence)"), 'Gesture and Japanese-repair checks must use Wisdom and Intelligence respectively');
 assert.ok(html.includes('state.immersionStage') && html.includes('state.immersionStart'), 'Language immersion must adapt from the chosen starting level');
-assert.ok(html.includes("resolve('good'") && html.includes("resolve('medium'") && html.includes("resolve('poor'"), 'Communication must resolve into three outcome tiers');
+assert.ok(html.includes("tier==='good'") && html.includes("tier==='medium'") && html.includes("else{state.flags.hanaTrust"), 'Communication must resolve into three outcome tiers');
+assert.ok(html.includes('function romajiToKana(input)') && html.includes('ROMAJI_RESPONSES'), 'Japanese input must accept romanized phrases and convert them to kana');
+assert.ok(html.includes('Kana conversion:') && html.includes('Why it was marked incorrect:'), 'Japanese responses must show kana conversion and explain mistakes');
+assert.ok(html.includes('Respond, act, or both') && (html.match(/id="storyChoices"/g)||[]).length===1, 'Dialogue and story actions must share one response area');
+assert.ok(html.includes('d20 + Wisdom') && html.includes('Intelligence repair'), 'The player must see the relevant language check explanations');
+assert.ok(html.includes('Hana is about twenty') && html.includes('The shrine guardian is a broad'), 'Characters and locations must have richer sensory descriptions');
 assert.ok(html.includes("classList.toggle('hidden',!!state.enemy"), 'Unavailable navigation and AI actions must be hidden during combat');
 assert.ok(!html.includes("type:'escape'"), 'Required encounters must not have a combat escape ability');
 for (const action of ['retreat','hide','counter','weapon','ranged']) { assert.ok(html.includes("['"+action+"'") || html.includes("data-combat-action=\\\"' + a[0]"), 'Missing tactical combat action: ' + action); }
