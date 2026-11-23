@@ -10,7 +10,7 @@ const requiredIds = [
   'view-adventure', 'view-character', 'view-abilities', 'view-inventory',
   'view-map', 'view-quests', 'view-journal', 'view-language',
   'storyChoices', 'battleActions', 'abilityCatalog', 'levelRewards', 'submitFree',
-  'aiReply', 'aiNarration', 'aiJapanese', 'aiSuggestions'
+  'aiReply', 'aiNarration', 'aiJapanese', 'aiSuggestions', 'interpretation'
 ];
 for (const id of requiredIds) {
   assert.ok(html.includes('id="' + id + '"') || html.includes("id='" + id + "'"), 'Missing required UI element: ' + id);
@@ -51,5 +51,10 @@ assert.ok(!html.includes('OPENAI_API_KEY='), 'The browser must never contain an 
 assert.ok(!html.includes('api.openai.com/v1/responses'), 'The browser must call only the local AI endpoint');
 assert.ok(!html.includes('supply bundle'), 'Level-up UI must not promise a supply bundle');
 assert.ok(!html.includes('maximum mana, +2 maximum stamina'), 'Level-up UI must not increase mana/stamina');
+assert.ok(html.includes('function interpretation('), 'Dialogue must offer contextual interpretation guesses');
+assert.ok(html.includes('if(state.enemy)') && html.includes('activeChoices'), 'Active combat must lock story choices');
+assert.ok(html.includes('free-form actions are unavailable until this foe is defeated'), 'Combat lock must be visible to the player');
+assert.ok(html.includes('unresolved foe still blocks the path'), 'Defeat must not bypass an unresolved encounter');
+assert.ok(!html.includes("type:'escape'"), 'Required encounters must not have a combat escape ability');
 
 console.log('WORLD ZERO prototype checks passed (' + requiredIds.length + ' UI anchors, ' + scripts.length + ' inline scripts).');
