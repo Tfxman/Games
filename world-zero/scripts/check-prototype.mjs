@@ -7,16 +7,16 @@ import assert from 'node:assert/strict';
 const htmlPath = new URL('../index.html', import.meta.url);
 const html = fs.readFileSync(htmlPath, 'utf8');
 const requiredIds = [
-  'view-adventure', 'view-character', 'view-party', 'view-inventory',
+  'view-adventure', 'view-character', 'view-abilities', 'view-inventory',
   'view-map', 'view-quests', 'view-journal', 'view-language',
-  'pointBuy', 'rollCheck', 'startCombat', 'attackBtn', 'defendBtn', 'fleeBtn'
+  'storyChoices', 'battleActions', 'abilityCatalog', 'levelRewards', 'submitFree'
 ];
 for (const id of requiredIds) {
   assert.ok(html.includes('id="' + id + '"') || html.includes("id='" + id + "'"), 'Missing required UI element: ' + id);
 }
 
 const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/gi)].map(m => m[1]);
-assert.ok(scripts.length >= 2, 'Expected the base app script and Phase 2 rules script');
+assert.ok(scripts.length >= 1, 'Expected the playable campaign script');
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'world-zero-check-'));
 try {
   scripts.forEach((source, index) => {
