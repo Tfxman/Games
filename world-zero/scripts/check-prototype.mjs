@@ -86,9 +86,9 @@ assert.ok(html.includes('daijoubu desu') && html.includes('hai daijoubu desu') &
 assert.ok(html.includes('normalizeDialogueKey(k)===normalizeDialogueKey(line)'), 'Dialogue response lookup must tolerate punctuation and quote formatting');
 assert.ok(!html.includes("best:'hai wakarimashita',medium:['hai','wakarimashita']"), 'Unknown dialogue must not fall back to an unrelated generic answer');
 
-const serverPath = new URL('../server.mjs', import.meta.url);
-const serverSource = fs.readFileSync(serverPath, 'utf8');
-const serverSyntax = spawnSync(process.execPath, ['--check', serverPath.pathname], { encoding:'utf8' });
+const aiServerPath = new URL('../server.mjs', import.meta.url);
+const serverSource = fs.readFileSync(aiServerPath, 'utf8');
+const serverSyntax = spawnSync(process.execPath, ['--check', aiServerPath.pathname], { encoding:'utf8' });
 assert.equal(serverSyntax.status, 0, 'AI server must pass Node syntax validation: ' + serverSyntax.stderr);
 assert.ok(serverSource.includes("url.pathname === '/api/language'") && serverSource.includes('async function handleLanguage'), 'The server must expose a dedicated Japanese language interpretation endpoint');
 assert.ok(serverSource.includes('const languageSchema') && serverSource.includes('grammar_points') && serverSource.includes('npc_response') && serverSource.includes('next_actions'), 'The AI response must contain structured grammar feedback and procedural story content');
