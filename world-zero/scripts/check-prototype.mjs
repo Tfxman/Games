@@ -58,6 +58,9 @@ assert.ok(html.includes('state.defeats>=3') && html.includes('campaignFailed'), 
 assert.ok(html.includes('activeChoices.filter(x=>!x.show||x.show())'), 'Story choices with unmet requirements must be hidden');
 assert.ok(html.includes('function interpretation(options,correct,meaning,clue,onGuess)'), 'Dialogue guesses must have persistent consequences');
 assert.ok(html.includes('Sling stones (5)'), 'Ranged attacks must consume finite ammunition');
+assert.ok(html.includes("else if(n===11)") && html.includes("else if(n===12)") && html.includes("else if(n===13)"), 'Chapter two must include three story scenes');
+assert.ok(html.includes('state.flags.destination') && html.includes('state.flags.routeChosen'), 'Branching routes must persist story choices');
+assert.ok(html.includes('state.flags.hanaTrust'), 'Dialogue interpretation must affect later relationship checks');
 assert.ok(html.includes("classList.toggle('hidden',!!state.enemy"), 'Unavailable navigation and AI actions must be hidden during combat');
 assert.ok(!html.includes("type:'escape'"), 'Required encounters must not have a combat escape ability');
 for (const action of ['retreat','hide','counter','weapon','ranged']) { assert.ok(html.includes("['"+action+"'") || html.includes("data-combat-action=\\\"' + a[0]"), 'Missing tactical combat action: ' + action); }
