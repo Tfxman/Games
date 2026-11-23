@@ -233,7 +233,32 @@ save();
 }
 function readLetter(){if(state.storyStep===0){state.storyStep=1;state.xp+=10;notify("Alder's letter is now recorded in your journal.");tab("story")}else tab("story")}
 function talk(id){let c=characters[id];state.dialogue={id:id,text:c.ask,result:"A moment to choose your words.",outcome:null,success:false};tab("village")}
-function approach(id,choice){let c=characters[id],trust=state.characterTrust[id]||0,book=hasBook(c.gift),evidence=Object.values(state.evidence).reduce((n,a)=>n+a.length,0),prepared=state.identified.length+Math.floor(evidence/3),base=choice==="listen"?.48:choice==="evidence"?.38:.42,bonus=choice==="listen"?trust*.035:choice==="evidence"?(book?.22:0)+Math.min(.18,prepared*.025):(hasBook("garden")?.10:0)+(Object.keys(state.garden).length?.12:0)+(Object.keys(state.experiments).filter(k=>state.experiments[k]).length*.035),chance=Math.max(.18,Math.min(.88,base+bonus+trust*.012)),success=Math.random()<chance;state.talkOutcomes.push({id,day:state.day,choice,result:success?"Connection made":"The conversation faltered",success});state.dialogue={id,text:success?c.ask:(choice==="listen"?"You pause, but the moment slips away before they feel ready to share more.":choice==="evidence"?"Your notes are interesting, but the comparison does not quite answer their concern.":"Your offer is kind, though the timing is not quite right."),result:success?"They respond warmly.":"They hesitate and the moment passes.",success,outcome:success?(hasTalk(id)?"You made progress together. Their trust grows.":"They share a memory and a useful research lead. A new page opens in your field journal."):"It did not work this time. Trust is strained, and a day passes. Prepare and try again.";if(success){state.characterTrust[id]=Math.min(5,trust+1);if(!hasTalk(id)){state.talked.push(id);state.xp+=10;state.goodwill+=3;addRumor(id);if(id==="mara"&&!hasBook("garden"))addBook("garden");if(id==="elias"&&!hasBook("meadow"))addBook("meadow");if(id==="rowan"&&!hasBook("wetland"))addBook("wetland");if(id==="tess"&&!hasBook("uses"))addBook("uses");if(state.talked.includes("mara")&&state.talked.includes("elias")&&state.talked.includes("tess")&&state.storyStep<2)state.storyStep=2;if(id==="rowan"&&state.storyStep<5&&hasIdent("yarrow")&&state.experiments.soil)state.storyStep=5;}}else{state.characterTrust[id]=Math.max(-3,trust-1);state.goodwill=Math.max(0,state.goodwill-1);advanceDay();}save();render();}
+function approach(id,choice){
+ let c=characters[id],trust=state.characterTrust[id]||0,book=hasBook(c.gift);
+ let evidence=Object.values(state.evidence).reduce((n,a)=>n+a.length,0);
+ let prepared=state.identified.length+Math.floor(evidence/3);
+ let base=choice==="listen" ? 0.48 : choice==="evidence" ? 0.38 : 0.42;
+ let bonus=choice==="listen" ? trust*0.035 : choice==="evidence" ? (book ? 0.22 : 0)+Math.min(0.18,prepared*0.025) : (hasBook("garden") ? 0.10 : 0)+(Object.keys(state.garden).length ? 0.12 : 0)+(Object.keys(state.experiments).filter(k=>state.experiments[k]).length*0.035);
+ let chance=Math.max(0.18,Math.min(0.88,base+bonus+trust*0.012));
+ let success=Math.random()<chance;
+ state.talkOutcomes.push({id:id,day:state.day,choice:choice,result:success?"Connection made":"The conversation faltered",success:success});
+ state.dialogue={id:id,text:success?c.ask:(choice==="listen"?"You pause, but the moment slips away before they feel ready to share more.":choice==="evidence"?"Your notes are interesting, but the comparison does not quite answer their concern.":"Your offer is kind, though the timing is not quite right."),result:success?"They respond warmly.":"They hesitate and the moment passes.",success:success,outcome:success?(hasTalk(id)?"You made progress together. Their trust grows.":"They share a memory and a useful research lead. A new page opens in your field journal."):"It did not work this time. Trust is strained, and a day passes. Prepare and try again."};
+ if(success){
+  state.characterTrust[id]=Math.min(5,trust+1);
+  if(!hasTalk(id)){
+   state.talked.push(id);state.xp+=10;state.goodwill+=3;addRumor(id);
+   if(id==="mara"&&!hasBook("garden"))addBook("garden");
+   if(id==="elias"&&!hasBook("meadow"))addBook("meadow");
+   if(id==="rowan"&&!hasBook("wetland"))addBook("wetland");
+   if(id==="tess"&&!hasBook("uses"))addBook("uses");
+   if(state.talked.includes("mara")&&state.talked.includes("elias")&&state.talked.includes("tess")&&state.storyStep<2)state.storyStep=2;
+   if(id==="rowan"&&state.storyStep<5&&hasIdent("yarrow")&&state.experiments.soil)state.storyStep=5;
+  }
+ }else{
+  state.characterTrust[id]=Math.max(-3,trust-1);state.goodwill=Math.max(0,state.goodwill-1);advanceDay();
+ }
+ save();render();
+}
 function observe(id,key,label){addEvidence(id,key,label)}
 function identify(id){
 let p=plants[id],count=evidenceCount(id);let relevantBook=state.books.some(bookId=>bookData[bookId]&&bookData[bookId].plants.includes(id));if(count<3||!relevantBook){toast("More evidence and a relevant reference book are needed.");return}
