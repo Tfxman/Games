@@ -44,6 +44,7 @@ const CLASSES={
 const $=id=>document.getElementById(id), mod=n=>Math.floor((n-10)/2), die=n=>Math.floor(Math.random()*n)+1, esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fresh=()=>({name:'Ari',species:'Human',klass:'Adventurer',background:'Outsider',level:1,xp:0,hp:12,maxHp:12,mana:5,maxMana:5,stamina:5,maxStamina:5,gold:0,stats:{Strength:10,Dexterity:10,Constitution:10,Intelligence:10,Wisdom:10,Charisma:10},items:['Rations','Waterskin','Weathered journal','Sling stones (5)'],unlocked:[],events:['You awaken in Kodama Forest beneath an unfamiliar sky.'],aiHistory:[],quests:{stranger:'active',missing:'hidden'},scene:0,enemy:null,defeats:0,vocab:{'大丈夫':0,'ですか':0,'こんにちは':0,'助けてください':0},guard:0,ward:0,buff:0,poison:0,evadeNext:false,counterDamage:0,flags:{}});
 let state;try{state={...fresh(),...JSON.parse(localStorage.getItem(KEY)||'{}')};state.stats={...fresh().stats,...(state.stats||{})};}catch{state=fresh();}
+state.defeats=state.defeats||0;state.flags=state.flags||{};state.quests=state.quests||{stranger:'active',missing:'hidden'};state.items=state.items||[];if(!state.items.includes('Sling stones (5)')&&!state.items.some(x=>/^Sling stone(s)? \\(\\d+\\)$/.test(x)))state.items.push('Sling stones (5)');
 let combatLog=[],activeChoices=[];
 const klass=()=>CLASSES[state.klass]||CLASSES.Adventurer;
 function save(){localStorage.setItem(KEY,JSON.stringify(state));$('saveState').textContent='Saved · '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});render();}
