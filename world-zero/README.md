@@ -9,11 +9,13 @@ A browser-based, isekai-inspired fantasy RPG where Japanese is learned through s
 Implemented:
 - Character creation with five classes, species/background choices, six attributes, and 27-point buy
 - Class-specific basic moves, spells, and unlockable techniques
-- Turn-based D20 combat, enemy armor, attacks, defense, healing, wards, poison, stun, and escape
+- Turn-based D20 combat, enemy armor, attacks, defense, healing, wards, poison, and stun
 - Mana and stamina costs for abilities
 - XP progression; on level-up, +2 max HP (+3 for Warriors), +1 max mana, and +1 max stamina, with those amounts restored
 - Class ability unlocks at levels 2, 3, and 5
 - Branching Chapter 1 story, Hana, missing-child quest, forest clues, shrine guardian, and multiple resolutions
+- Context-first Japanese dialogue: infer meaning from gestures and scene clues, choose a guess, and learn the meaning after responding
+- Encounter lock: while an enemy is active, story choices, travel, and free-form actions are blocked; required fights cannot be escaped
 - AI Dungeon Master integration for free-form actions, adaptive Japanese dialogue, translation, Japanese writing feedback, cautious text-only proficiency estimates, and suggested next actions (when connected to a configured backend)
 - Recent AI DM turns and latest writing assessment saved in the local campaign notebook
 - Local campaign save, inventory, quests, map, and journal
