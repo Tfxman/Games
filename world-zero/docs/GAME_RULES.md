@@ -32,7 +32,7 @@ Each class has two basic actions and three milestone techniques. Class technique
 
 ## Story, choices, and failure
 
-- The opening campaign contains branching outcomes for the first meeting with Hana, the missing-child search, the shrine guardian, and the village aftermath.
+- The opening campaign contains branching outcomes for the first meeting with Hana, the missing-child search, the shrine guardian, the village aftermath, and three distinct Chapter 2 routes: the watchtower, ferry, and sealed shrine.
 - Scripted story choices write persistent flags, quest states, inventory, resource, relationship, or destination changes. Later scenes use those flags to alter descriptions and available choices.
 - Dialogue interpretation attempts also have consequences. Correct and incorrect guesses affect the recorded understanding and Hana's trust; later scenes respond through changed behavior and circumstances rather than immediate answer explanations.
 - Investigation checks can fail. Losing the trail costs time and HP and can change the rescue outcome. Players can abandon the rescue, ignore the alarm, lose the child, or be defeated in combat.
@@ -60,7 +60,7 @@ The AI is not authoritative. It must not award XP, gold, items, levels, stats, d
 
 ## Language learning
 
-Scripted dialogue presents Japanese without an immediate translation. Players infer meaning from gestures, expression, and scene context, then choose an interpretation. Incorrect guesses are allowed and reveal the meaning afterward; the intent is contextual comprehension rather than a perfect-translation prompt.
+Scripted dialogue presents Japanese without an immediate translation. Players infer meaning from gestures, expression, tone, and scene context, then choose an interpretation. Incorrect guesses are allowed and affect relationship state and later checks; the immediate response is another action or contextual reaction, not a direct translation. Meaning can be pieced together from subsequent events.
 
 AI feedback evaluates only the Japanese text actually supplied. English-only actions and gestures provide no Japanese production evidence. A single sample is not a reliable placement test; estimates are formative and should remain low-confidence until supported by multiple examples. Text interaction does not assess listening or pronunciation.
 
