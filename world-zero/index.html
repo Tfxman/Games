@@ -90,14 +90,14 @@ const LANGUAGE_LINES={
  '道は一つではありません。':{best:'別の道もありますね。',medium:['道','別の道','わかりました'],gesture:1,gestures:['Fold the map and refuse it.','Trace both branches of the route, then indicate the one you choose.','Point at Hana and wait for her to carry you.'],intent:'Hana is showing you that more than one path is possible.'},
  '次は、あなたが決めて。':{best:'私が決めます。',medium:['私が決めます','はい','わかりました'],gesture:0,gestures:['Take the map carefully and consider its blank corner.','Push the map into the river.','Walk away without acknowledging her.'],intent:'Hana is giving the next decision to you.'}
 };
-function normalizeDialogueKey(s){return String(s).normalize('NFKC').replace(/[「」『』。！!？?、\\s・]/g,'');}
+function normalizeDialogueKey(s){return String(s).normalize('NFKC').replace(/[「」『』。！!？?、\s・]/g,'');}
 const RESPONSE_ACCEPTANCE={
  '大丈夫ですか？':{best:['大丈夫です。ありがとうございます。','はい、大丈夫です。ありがとうございます。','大丈夫です、ありがとう。'],good:['大丈夫です','はい、大丈夫です','大丈夫','ありがとうございます','ありがとう','元気です','はい、元気です'],romajiBest:['daijoubu desu arigatou gozaimasu','hai daijoubu desu arigatou gozaimasu'],romajiGood:['daijoubu desu','hai daijoubu desu','daijoubu','arigatou gozaimasu','arigatou','genki desu','hai genki desu']},
  '子どもがいない！':{best:['手伝います。','私が手伝います。','子どもを探します。'],good:['手伝います','私が手伝います','助けます','探します','子どもはどこですか','どこですか','一緒に探します'],romajiBest:['tetsudaimasu','watashi ga tetsudaimasu','kodomo o sagashimasu'],romajiGood:['tetsudaimasu','watashi ga tetsudaimasu','tasukemasu','sagashimasu','kodomo wa doko desu ka','doko desu ka','issho ni sagashimasu']}
 };
 function validateJapaneseResponse(key,raw,converted,config,roman){
  const rules=RESPONSE_ACCEPTANCE[key],norm=normalizeKana(converted),rawNorm=normalizeKana(raw);
- const canonical=x=>{const value=String(x);return normalizeKana(/^[a-zA-Z\\s']+$/.test(value)?romajiToKana(value):value);};
+ const canonical=x=>{const value=String(x);return normalizeKana(/^[a-zA-Z\s']+$/.test(value)?romajiToKana(value):value);};
  const exact=items=>items.some(x=>{const n=canonical(x);return n===norm||n===rawNorm;});
  if(rules){if(exact(rules.best)||exact(rules.romajiBest)||exact([config.best])||exact([roman.best]))return 'good';if(exact(rules.good)||exact(rules.romajiGood)||exact(config.medium||[])||exact(roman.medium||[]))return 'medium';return 'incorrect';}
  if(config.best&&exact([config.best,roman.best]))return 'good';
@@ -168,7 +168,7 @@ function interpretation(options,correct,meaning,clue,onGuess){
  }
  async function speak(){
   const raw=$('jpReply').value.trim();if(!raw){result.textContent='Enter Japanese or romaji, or choose a gesture.';return;}
-  const isRomaji=/^[a-zA-Z\\s']+$/.test(raw),converted=isRomaji?romajiToKana(raw):raw;
+  const isRomaji=/^[a-zA-Z\s']+$/.test(raw),converted=isRomaji?romajiToKana(raw):raw;
   $('jpConversion').textContent=isRomaji?'Kana conversion: '+converted:'Japanese input recognized: '+converted;
   const send=$('sendJapanese');send.disabled=true;result.textContent='Checking your Japanese in context and considering how the story responds…';
   try{
