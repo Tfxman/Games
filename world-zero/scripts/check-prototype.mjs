@@ -10,7 +10,7 @@ const requiredIds = [
   'view-adventure', 'view-character', 'view-abilities', 'view-inventory',
   'view-map', 'view-quests', 'view-journal', 'view-language',
   'storyChoices', 'battleActions', 'abilityCatalog', 'levelRewards', 'submitFree',
-  'aiReply', 'aiNarration', 'aiJapanese', 'aiSuggestions', 'interpretation'
+  'aiReply', 'aiNarration', 'aiJapanese', 'aiSuggestions', 'interpretation', 'immersionStart', 'saveImmersion'
 ];
 for (const id of requiredIds) {
   assert.ok(html.includes('id="' + id + '"') || html.includes("id='" + id + "'"), 'Missing required UI element: ' + id);
@@ -61,6 +61,12 @@ assert.ok(html.includes('Sling stones (5)'), 'Ranged attacks must consume finite
 assert.ok(html.includes("else if(n===11)") && html.includes("else if(n===12)") && html.includes("else if(n===13)"), 'Chapter two must include three story scenes');
 assert.ok(html.includes('state.flags.destination') && html.includes('state.flags.routeChosen'), 'Branching routes must persist story choices');
 assert.ok(html.includes('state.flags.hanaTrust'), 'Dialogue interpretation must affect later relationship checks');
+assert.ok(html.includes('const ENDINGS=[') && (html.match(/epitaph:'/g) || []).length === 14, 'Campaign must include fourteen authored endings');
+assert.ok(html.includes('function finishEnding(id)') && html.includes('else if(n===14)'), 'Chapter three must route choices to persistent endings');
+assert.ok(html.includes('LANGUAGE_LINES') && html.includes('function updateLanguageEvidence'), 'Dialogue must include structured Japanese and gesture response data');
+assert.ok(html.includes("die(20)+mod(state.stats.Wisdom)") && html.includes("die(20)+mod(state.stats.Intelligence)"), 'Gesture and Japanese-repair checks must use Wisdom and Intelligence respectively');
+assert.ok(html.includes('state.immersionStage') && html.includes('state.immersionStart'), 'Language immersion must adapt from the chosen starting level');
+assert.ok(html.includes("resolve('good'") && html.includes("resolve('medium'") && html.includes("resolve('poor'"), 'Communication must resolve into three outcome tiers');
 assert.ok(html.includes("classList.toggle('hidden',!!state.enemy"), 'Unavailable navigation and AI actions must be hidden during combat');
 assert.ok(!html.includes("type:'escape'"), 'Required encounters must not have a combat escape ability');
 for (const action of ['retreat','hide','counter','weapon','ranged']) { assert.ok(html.includes("['"+action+"'") || html.includes("data-combat-action=\\\"' + a[0]"), 'Missing tactical combat action: ' + action); }
