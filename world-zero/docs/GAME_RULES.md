@@ -28,7 +28,18 @@ Each class has two basic actions and three milestone techniques. Class technique
 - Defensive moves reduce the next incoming damage; wards absorb damage; healing restores HP; poison deals damage on subsequent enemy turns.\n- **Retreat:** costs 1 stamina and makes a Dexterity check against enemy AC. Success avoids the enemy's next strike, but the encounter stays active and must still be completed. Failure leaves the player exposed.\n- **Hide:** costs 2 stamina and makes a Dexterity check against enemy AC. Success avoids the next strike and adds +2 damage to the player's next attack; failure leaves the player exposed.\n- **Counter attack:** costs 2 stamina. The player braces, reduces the next hit by 3, then automatically deals 4 damage plus the Strength modifier.\n- **Weapon attack:** costs 1 stamina, uses Strength, and deals 1d8 plus the positive Strength modifier on a hit.\n- **Ranged attack:** costs 2 stamina, uses Dexterity, and deals 1d6 plus the positive Dexterity modifier on a hit.\n- These tactical actions consume the player's turn. Retreat is a defensive maneuver, not an encounter skip; required encounters cannot be bypassed.
 - Enemy attacks deal a random amount based on the encounter's damage rating.
 - While an enemy is active, story choices, travel/navigation, and free-form Dungeon Master actions are locked. Only combat moves are available until the foe is defeated.
-- If HP reaches zero, the character is revived at half HP and loses 5 gold, but the unresolved foe remains active at full HP; the encounter must still be completed.
+- If HP reaches zero, the character loses 5 gold and wakes at half HP; the unresolved foe returns to full HP. Spent mana and stamina are not restored. After three defeats in the same campaign, the journey ends and the player must start a new campaign.
+
+## Story, choices, and failure
+
+- The opening campaign contains branching outcomes for the first meeting with Hana, the missing-child search, the shrine guardian, and the village aftermath.
+- Scripted story choices write persistent flags, quest states, inventory, resource, relationship, or destination changes. Later scenes use those flags to alter descriptions and available choices.
+- Dialogue interpretation attempts also have consequences. Correct and incorrect guesses affect the recorded understanding and Hana's trust; later scenes respond through changed behavior and circumstances rather than immediate answer explanations.
+- Investigation checks can fail. Losing the trail costs time and HP and can change the rescue outcome. Players can abandon the rescue, ignore the alarm, lose the child, or be defeated in combat.
+- The missing-child quest can end as complete, failed, or abandoned. A failed quest does not silently become a success later.
+- Three combat defeats end the campaign. The game presents a new-campaign action rather than silently reviving the player indefinitely.
+- Choices with unmet prerequisites are hidden. Combat actions that cannot currently be paid for are hidden; healing is hidden at full HP, wards are hidden while an existing ward remains, and ranged attacks require sling ammunition.
+- During combat, navigation and free-form AI actions are hidden. Combat choices remain available only when the player has the resources and equipment required.
 
 ## Level progression and rewards
 
