@@ -4,18 +4,19 @@ A browser-based, isekai-inspired tabletop RPG prototype where Japanese is learne
 
 ## Current status
 
-**Phase 1 foundation prototype.** This is a front-end-only playable shell. It includes a navigable campaign interface, editable character profile, party roster, equipment inventory, regional map, quest board, event journal, and a small Japanese dialogue encounter. It saves demo campaign state in the browser's local storage.
+**Phase 1 foundation + Phase 2 rules prototype.** The browser prototype includes a navigable campaign interface, editable character profile, 27-point-buy attributes, five character archetypes, D20 ability checks, a practice combat loop, XP/level progression, party roster, inventory, regional map, quest board, event journal, and Japanese vocabulary view. Demo campaign state is saved in browser local storage.
 
-It does **not** yet include an AI DM, server-side persistence, authentication, real multiplayer, or production language assessment. Those require the backend and database phases described in `docs/DEVELOPMENT_ROADMAP.md`.
+This is still a front-end prototype. It does **not** yet include an AI DM, server-side persistence, authentication, production language assessment, or online multiplayer. Browser-side rolls and character data are editable and are not authoritative.
 
 ## Run locally
 
-Open `world-zero/index.html` in a modern browser. No build step is required for this first prototype.
+Open `world-zero/index.html` in a modern browser. No build step is required for this prototype.
 
 ## Project structure
 
 - `world-zero/index.html` — interactive prototype
 - `world-zero/docs/GAME_DESIGN_SPEC.md` — product and system specification
+- `world-zero/docs/GAME_RULES.md` — prototype tabletop rules
 - `world-zero/docs/DEVELOPMENT_ROADMAP.md` — phased development plan
 - `world-zero/database/schema.sql` — initial PostgreSQL/Supabase schema draft
 
@@ -24,7 +25,7 @@ Open `world-zero/index.html` in a modern browser. No build step is required for 
 1. Gameplay first; language learning is embedded in the adventure.
 2. Players can attempt open-ended actions, not only predefined choices.
 3. Language proficiency is assessed independently by skill and player.
-4. The game engine, not the language model, validates game-state changes.
+4. The game engine, not the language model, validates mechanics.
 5. Campaign history and world consequences persist between sessions.
 6. Single-player and multiplayer share the same underlying rules and data model.
 
