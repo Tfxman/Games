@@ -116,3 +116,12 @@ A short opening adventure, "The Stranger":
 - Validate actions and game rules server-side.
 - Use database authorization policies for campaign membership and character ownership.
 - Treat language proficiency as an estimate with evidence and confidence, not a single opaque score.
+
+
+### AI Japanese interpreter and procedural narrative (prototype)
+- The local `POST /api/language` endpoint assesses open-ended Japanese replies in context, separating communicative appropriateness from grammatical naturalness.
+- Assessment includes intended meaning, grammar points, corrected phrasing, natural alternatives, and confidence. It should accept valid paraphrases rather than exact-string matches.
+- Each assessment generates an NPC reaction, a short narrative beat, contextual clues, and three possible next actions that reflect the player's wording and the recent story.
+- AI output is narrative-only. The deterministic client engine continues to own XP, inventory, stats, combat, quest completion, and persistent world flags.
+- This is a model-based interpreter, not a complete formal Japanese grammar parser; ambiguous outputs should be marked uncertain and evaluated conservatively. A local phrase-matching fallback remains available without the backend.
+- GitHub Pages cannot run the Node API. AI turns require the local server or a separately deployed, secured backend.
