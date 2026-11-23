@@ -4,21 +4,33 @@ A browser-based, isekai-inspired fantasy RPG where Japanese is learned through s
 
 ## Current status
 
-**Playable single-player Chapter 1 prototype with an AI Dungeon Master integration.** Run the Node server and configure an OpenAI API key to use AI turns. The campaign game state still saves locally in the browser.
+**Playable single-player Chapter 1 prototype.** The browser game can be hosted as a static site on GitHub Pages. The optional AI Dungeon Master requires a separate server and a privately configured OpenAI API key; it does not run on GitHub Pages.
 
 Implemented:
 - Character creation with five classes, species/background choices, six attributes, and 27-point buy
 - Class-specific basic moves, spells, and unlockable techniques
 - Turn-based D20 combat, enemy armor, attacks, defense, healing, wards, poison, stun, and escape
 - Mana and stamina costs for abilities
-- XP progression, HP growth, and class ability unlocks at levels 2, 3, and 5
-- No mana/stamina increases, full refill, gold, or supply bundle as level-up rewards
+- XP progression; on level-up, +2 max HP (+3 for Warriors), +1 max mana, and +1 max stamina, with those amounts restored
+- Class ability unlocks at levels 2, 3, and 5
 - Branching Chapter 1 story, Hana, missing-child quest, forest clues, shrine guardian, and multiple resolutions
-- AI Dungeon Master endpoint using the OpenAI Responses API: free-form actions, adaptive Japanese dialogue, translation, Japanese writing feedback, cautious text-only proficiency estimates, and suggested next actions
+- AI Dungeon Master integration for free-form actions, adaptive Japanese dialogue, translation, Japanese writing feedback, cautious text-only proficiency estimates, and suggested next actions (when connected to a configured backend)
 - Recent AI DM turns and latest writing assessment saved in the local campaign notebook
 - Local campaign save, inventory, quests, map, and journal
 
-## Run locally
+## Play on the web (GitHub Pages)
+
+The deployment workflow publishes the contents of this folder when changes are pushed to `main`.
+
+After GitHub Pages is enabled for this repository, the game URL will be:
+
+https://tfxman.github.io/Games/
+
+To enable it: open the repository's **Settings → Pages**, set **Build and deployment → Source** to **GitHub Actions**, and save. Then open **Actions** and wait for **Deploy WORLD ZERO to GitHub Pages** to finish successfully. The workflow may also be started manually from the Actions tab.
+
+The hosted static version supports the scripted single-player game and saves progress in that browser. The AI Dungeon Master panel requires a separately deployed, secured backend; it will not work on the static GitHub Pages site by itself. Do not put an API key in browser code or GitHub Pages files.
+
+## Run locally with the AI Dungeon Master
 
 Requires Node.js 22+ and an OpenAI API key.
 
@@ -45,9 +57,9 @@ Do not open `index.html` directly with `file://`; the AI DM needs the server end
 
 ## Important limitations
 
-This is an AI-connected solo prototype, not a production-ready AI multiplayer game. The AI can narrate reactions and suggest next actions, but it does not yet change authoritative quest/world state or resolve game mechanics. Scripted chapter choices still control the main quest branches. Japanese feedback is text-only and formative; a single message is not a reliable proficiency placement test. There is no speech recognition, listening assessment, login, persistent server database, online multiplayer, or server-authoritative combat. Browser save data and rolls can be modified by the player.
+This is a solo prototype, not a production-ready AI multiplayer game. The AI can narrate reactions and suggest next actions, but it does not yet change authoritative quest/world state or resolve game mechanics. Scripted chapter choices still control the main quest branches. Japanese feedback is text-only and formative; a single message is not a reliable proficiency placement test. There is no speech recognition, listening assessment, login, persistent server database, online multiplayer, or server-authoritative combat. Browser save data and rolls can be modified by the player.
 
-The local Node server includes basic input limits, same-origin checks, a per-process request limit, and timeouts. It is intended for local development only. Public deployment requires authentication, durable rate limits, abuse monitoring, budget controls, HTTPS, and persistent campaign storage.
+The local Node server includes basic input limits, same-origin checks, a per-process request limit, and timeouts. It is intended for local development only. Public AI deployment requires authentication, durable rate limits, abuse monitoring, budget controls, HTTPS, and persistent campaign storage.
 
 ## Project structure
 
