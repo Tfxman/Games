@@ -12,13 +12,22 @@
 **Exit condition:** a stable, navigable client with a clear data model.
 
 ## Phase 2 — Character system and rules
-- Define attribute modifiers, skills, difficulty classes, and advantage/disadvantage
-- Implement character creation and four starting classes
-- Implement equipment slots, inventory rules, HP, XP, and leveling
-- Add deterministic dice and combat resolution
-- Add unit tests for rules
+- [x] Define six attributes and ability modifiers
+- [x] Add 27-point-buy allocation (scores 8–15)
+- [x] Add five selectable archetypes: Adventurer, Warrior, Mage, Rogue, Cleric
+- [x] Add class-based starting HP and starter equipment
+- [x] Add D20 ability checks against selectable difficulty classes
+- [x] Add a deterministic-rules prototype combat loop (initiative, attack, defend, retreat, damage, victory)
+- [x] Add XP awards and automatic level progression
+- [ ] Add skill proficiency and advantage/disadvantage
+- [ ] Add real equipment slots, armor class, weapon properties, and item effects
+- [ ] Add class-specific abilities and spell resources
+- [ ] Extract rules into tested TypeScript modules with unit tests
+- [ ] Move authoritative dice, combat, and progression calculations server-side
 
-**Exit condition:** a player can create, develop, equip, and use a character in a rules-consistent encounter.
+**Current note:** the checked items above are implemented in the browser prototype for solo experimentation. They are not secure multiplayer rules yet; browser-side state can be edited and must not be trusted by a server.
+
+**Exit condition:** a player can create, develop, equip, and use a character in a rules-consistent encounter, with authoritative rules validated server-side.
 
 ## Phase 3 — AI Dungeon Master
 - Create secure server-side AI gateway
