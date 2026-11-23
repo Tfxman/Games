@@ -208,7 +208,7 @@ function readLetter(){if(state.storyStep===0){state.storyStep=1;state.xp+=10;not
 function talk(id){
 let c=characters[id];if(!hasTalk(id)){state.talked.push(id);state.xp+=10;state.goodwill+=3;addRumor(id);if(id==="mara"&&!hasBook("garden")){addBook("garden")}if(id==="elias"&&!hasBook("meadow")){addBook("meadow")}if(id==="rowan"&&!hasBook("wetland")){addBook("wetland")}if(id==="tess"&&!hasBook("uses")){addBook("uses")}
 if(state.talked.includes("mara")&&state.talked.includes("elias")&&state.talked.includes("tess")&&state.storyStep<2)state.storyStep=2;
-if(id==="rowan"&&state.storyStep<5&&hasIdent("yarrow"))state.storyStep=5;
+if(id==="rowan"&&state.storyStep<5&&hasIdent("yarrow")&&state.experiments.soil)state.storyStep=5;
 state.dialogue={id:id,text:c.ask};save();}
 tab("village");toast(c.name+" shared a memory and a research lead.");}
 function observe(id,key,label){addEvidence(id,key,label)}
@@ -220,7 +220,7 @@ document.getElementById("view-explore").insertAdjacentHTML("beforeend",'<div cla
 document.getElementById("identifyPanel").scrollIntoView({behavior:"smooth",block:"center"});
 }
 function chooseId(id,choice){
-if(choice===id){if(!hasIdent(id)){state.identified.push(id);state.xp+=30;state.goodwill+=5;state.plantsSeen.push(id);state.notes.push("Confirmed "+plants[id].common+" ("+plants[id].scientific+") after comparing "+evidenceCount(id)+" field characters.");if(state.storyStep<3)state.storyStep=3;if(id==="milkweed"&&state.storyStep>=5)state.storyStep=6;notify("Correct. "+plants[id].common+" added to your field journal.");}else toast("That species is already confirmed.");}
+if(choice===id){if(!hasIdent(id)){state.identified.push(id);state.xp+=30;state.goodwill+=5;state.plantsSeen.push(id);state.notes.push("Confirmed "+plants[id].common+" ("+plants[id].scientific+") after comparing "+evidenceCount(id)+" field characters.");if(id==="yarrow"&&state.storyStep<3)state.storyStep=3;if(id==="milkweed"&&state.storyStep>=5)state.storyStep=6;notify("Correct. "+plants[id].common+" added to your field journal.");}else toast("That species is already confirmed.");}
 else{state.day++;state.goodwill=Math.max(0,state.goodwill-2);notify("The identification does not fit all the characters. Revisit your notes; a day has passed.");}
 save();render();
 }
@@ -230,7 +230,7 @@ if(state.experiments[id])return;
 let b=id==="soil"||id==="light"?"garden":id==="pollinator"?"meadow":"";
 if(!hasBook(b==="garden"?"garden":"meadow")){toast("You need the relevant reference book before setting up this study.");return}
 state.experiments[id]=true;state.xp+=20;state.findings.push({title:id==="soil"?"Soil and seed trial":id==="light"?"Light observation":"Meadow visitor count",text:id==="soil"?"Two small pots were compared with the same seed lot. The result is a local observation; repeat the trial before drawing broad conclusions.":id==="light"?"The brighter position showed different growth from the shaded position. Water and soil were kept as similar as possible.":"You recorded visits across three observation periods. The meadow supports a changing mix of flower visitors.",date:"Day "+state.day});
-if(state.storyStep<4&&id==="soil")state.storyStep=4;
+if(state.identified.includes("yarrow")&&id==="soil"&&state.storyStep<4)state.storyStep=4;if(id==="soil"&&hasTalk("rowan")&&state.identified.includes("yarrow")&&state.storyStep<5)state.storyStep=5;
 gain(2,"Research completed");save();render();
 }
 function plant(id){if(!hasBook("garden")){toast("Find a gardening manual first.");return}if(state.garden[id])return;state.garden[id]={stage:0};state.xp+=5;notify("You planted "+plants[id].common+".");save();render()}
