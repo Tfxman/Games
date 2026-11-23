@@ -4,6 +4,13 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
+try {
+  const localEnv = fs.readFileSync(path.join(ROOT, '.env'), 'utf8');
+  for (const line of localEnv.split(/\\r?\\n/)) {
+    const match = line.match(/^\\s*([A-Z_][A-Z0-9_]*)\\s*=\\s*(.*)\\s*$/);
+    if (match && !process.env[match[1]]) process.env[match[1]] = match[2].replace(/^["']|["']$/g, '');
+  }
+} catch { /* A .env file is optional; platform environment variables take precedence. */ }
 const PORT = Number(process.env.PORT || 4173);
 const MODEL = process.env.OPENAI_MODEL || 'gpt-5.5';
 const API_KEY = process.env.OPENAI_API_KEY;
