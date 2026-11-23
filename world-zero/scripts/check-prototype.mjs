@@ -54,7 +54,11 @@ assert.ok(!html.includes('maximum mana, +2 maximum stamina'), 'Level-up UI must 
 assert.ok(html.includes('function interpretation('), 'Dialogue must offer contextual interpretation guesses');
 assert.ok(html.includes('if(state.enemy)') && html.includes('activeChoices'), 'Active combat must lock story choices');
 assert.ok(html.includes('free-form actions are unavailable until this foe is defeated'), 'Combat lock must be visible to the player');
-assert.ok(html.includes('unresolved foe still blocks the path'), 'Defeat must not bypass an unresolved encounter');
+assert.ok(html.includes('state.defeats>=3') && html.includes('campaignFailed'), 'Repeated defeat must be able to end the campaign');
+assert.ok(html.includes('activeChoices.filter(x=>!x.show||x.show())'), 'Story choices with unmet requirements must be hidden');
+assert.ok(html.includes('function interpretation(options,correct,meaning,clue,onGuess)'), 'Dialogue guesses must have persistent consequences');
+assert.ok(html.includes('Sling stones (5)'), 'Ranged attacks must consume finite ammunition');
+assert.ok(html.includes("classList.toggle('hidden',!!state.enemy"), 'Unavailable navigation and AI actions must be hidden during combat');
 assert.ok(!html.includes("type:'escape'"), 'Required encounters must not have a combat escape ability');
 for (const action of ['retreat','hide','counter','weapon','ranged']) { assert.ok(html.includes("['"+action+"'") || html.includes("data-combat-action=\\\"' + a[0]"), 'Missing tactical combat action: ' + action); }
 assert.ok(html.includes('function useCombatAction(action)'), 'Tactical combat actions must resolve through the combat engine');
