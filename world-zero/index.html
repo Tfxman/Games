@@ -167,12 +167,63 @@ function scene(n){
   interpretation(['Goodbye.','Welcome home.','I am sorry.'],0,'It is a farewell.','The village roofs are already small behind you; the road ahead is empty.',()=>{});
   choices([{label:'Continue to the next chapter.',run:()=>{state.flags.chapterOneEnded=true;scene(8);}}]);
  }
+ else if(n===11){
+  $('sceneTitle').textContent='Chapter 2: The Divided Road';$('sceneHeading').textContent=state.flags.destination==='watchtower'?'Smoke above the watchtower':state.flags.destination==='ferry'?'The ferry in the rain':'The shrine beneath the ink stain';
+  if(state.flags.destination==='watchtower'){
+   $('sceneText').textContent='The ridge path narrows to a shelf of wet stone. Above it, the watchtower leans into the wind. Smoke curls from a slit in the upper floor, though the tower has been marked abandoned on Hana’s map. A narrow stair has collapsed; the only visible entrance is a half-open service door beneath the eastern wall.';
+   $('dialogue').textContent='「誰かいるのか？」';$('translation').textContent='A voice comes from behind the service door. A shadow crosses the slit window, then vanishes. The speaker does not open the door.';
+   interpretation(['Is someone there?','Where is the road?','Are you hungry?'],0,'Someone inside is asking whether anyone is there.','The shadow pauses at the window as if listening for an answer.',right=>{state.flags.watchtowerHeardVoice=right;});
+   choices([
+    {label:'Knock twice and step back into view.',run:()=>{state.flags.towerKnock=true;const roll=die(20)+mod(state.stats.Charisma);if(roll>=12){state.flags.towerTrust=true;log('The door opens a handspan. A tired keeper recognizes the bell token and lets you inside.');}else{state.hp=Math.max(1,state.hp-1);state.flags.towerSuspicious=true;log('A crossbow bolt strikes the doorframe beside your shoulder. The keeper does not trust strangers.');}scene(12);}},
+    {label:'Circle the wall and search for another entrance (Dexterity check).',run:()=>{const roll=die(20)+mod(state.stats.Dexterity);state.flags.towerSneak=roll>=12;if(roll>=12){gainXP(12,'You find a concealed stair');log('A concealed stair leads to the tower’s store room. You discover a weatherproof map case.');if(!state.items.includes('Weatherproof map'))state.items.push('Weatherproof map');}else{state.hp=Math.max(1,state.hp-2);log('Loose slate gives way. You slide down the wet slope with scraped hands.');}scene(12);}},
+    {label:'Call out a greeting in Japanese.',run:()=>{state.flags.towerGreeting=true;state.vocab['こんにちは']=(state.vocab['こんにちは']||0)+1;log('Your greeting carries up the stone wall. The shadow returns to the window.');scene(12);}}
+   ]);
+  }else if(state.flags.destination==='ferry'){
+   $('sceneText').textContent='The eastern road ends at a swollen river. A flat-bottomed ferry strains against its ropes, knocking against the landing posts. The ferryman is trying to pull a soaked canvas over a crate of lantern oil. Beyond the river, a line of travelers waits beneath a cedar awning.';
+   $('dialogue').textContent='「手を貸して！」';$('translation').textContent='The ferryman braces one boot against the post and reaches toward a rope that has slipped into the water. He looks from the rope to your hands.';
+   interpretation(['Give me a hand!','The ferry is leaving!','Do not cross!'],0,'The ferryman is asking for help.','He reaches for the rope again; the ferry knocks hard against the landing.',right=>{state.flags.ferryRequestUnderstood=right;});
+   choices([
+    {label:'Grab the wet rope and haul with the ferryman (Strength check).',run:()=>{const roll=die(20)+mod(state.stats.Strength);state.flags.ferryHelped=roll>=11;if(roll>=11){gainXP(12,'You secure the ferry');state.gold+=4;log('Together you pull the ferry tight. The ferryman presses four coins into your palm.');}else{state.hp=Math.max(1,state.hp-2);log('The rope burns through your grip and the ferry slams the post. The ferryman secures it alone.');}scene(12);}},
+    {label:'Help cover the lantern-oil crate.',run:()=>{state.flags.protectedCargo=true;gainXP(8,'You protect the ferry cargo');log('You drag the canvas over the crate before the rain soaks the wicks. The ferryman nods, grateful.');scene(12);}},
+    {label:'Board before the storm worsens (Dexterity check).',run:()=>{const roll=die(20)+mod(state.stats.Dexterity);state.flags.boardedFerry=roll>=12;if(roll>=12){log('You leap aboard as the ferry swings toward the landing.');}else{state.hp=Math.max(1,state.hp-2);log('The slick plank shifts beneath your foot. You fall hard against the post and miss the crossing.');}scene(12);}}
+   ]);
+  }else{
+   $('sceneText').textContent='The black stain on Hana’s map marks a narrow ravine. At its end stands a shrine with no bell and no offering box. The paper seals on its doors are fresh, but each bears the same brushstroke: a circle left open at the bottom. Wind moves through the sealed building though its doors remain shut.';
+   $('dialogue').textContent='「入ってはいけない。」';$('translation').textContent='Hana stops several paces from the threshold. She holds one palm toward the door, then points to the fresh seals. Her other hand closes around the small bell cord.';
+   interpretation(['You must not enter.','Someone is waiting inside.','The shrine is empty.'],0,'Hana is warning you away from the threshold.','Her palm remains raised between you and the door. The paper seals tremble although the air is still.',right=>{state.flags.shrineWarningUnderstood=right;});
+   choices([
+    {label:'Study the open circle on the paper seal (Intelligence check).',run:()=>{const roll=die(20)+mod(state.stats.Intelligence);state.flags.sealRead=roll>=12;if(roll>=12){gainXP(14,'You understand the seal pattern');log('The open circle is not a mark of welcome. It is a gap where something has been allowed to pass.');}else{state.hp=Math.max(1,state.hp-1);log('The ink blurs under your touch. A cold draft slips through the gap in the circle.');}scene(12);}},
+    {label:'Leave an offering at the stone step.',run:()=>{state.flags.shrineOffering=true;if(state.items.includes('Rations'))state.items.splice(state.items.indexOf('Rations'),1);gainXP(8,'You leave an offering');log('You leave a ration beneath the eaves. The paper seals stop trembling for a moment.');scene(12);}},
+    {label:'Cross the threshold despite Hana’s warning.',run:()=>{state.flags.brokeSeal=true;state.hp=Math.max(1,state.hp-3);log('The paper seals tear like wet skin. Something cold passes through you, and the doors close behind you.');scene(12);}}
+   ]);
+  }
+ }
+ else if(n===12){
+  $('sceneTitle').textContent='A Mark on the Map';$('sceneHeading').textContent='The road leaves a trace';$('sceneText').textContent=state.flags.destination==='watchtower'?(state.flags.towerTrust?'The tower keeper unrolls a map beneath a guttering lamp. A red mark circles the northern pass. “The road has been moving,” he says, tapping the ink with one blunt finger.':'The watchtower remains behind you, its upper window dark. Someone has watched you leave. A scrap of map caught on the service door shows a red mark around the northern pass.') :state.flags.destination==='ferry'?(state.flags.ferryHelped||state.flags.protectedCargo?'The ferryman gives you a place beneath the awning and points to a route drawn on the back of a cargo manifest. The river carries a low humming sound from somewhere upstream.':'The ferry pulls away without you. On the landing post, a soaked manifest lists a village that does not appear on Hana’s map.') :(state.flags.sealRead?'The open circle on the seal remains in your thoughts. Hana copies its shape onto the map and draws a line toward the northern pass.':'The shrine doors are quiet again. Hana marks the ravine with a charcoal cross and folds the map before the wind can take it.');
+  $('dialogue').textContent='「道は一つではありません。」';$('translation').textContent='Hana traces two different routes with her finger, then deliberately leaves the final line unfinished. She looks to you rather than choosing for you.';
+  interpretation(['There is more than one path.','The road is closed.','We are already home.'],0,'Hana says there is more than one path.','Her finger branches across the map. She leaves the choice of direction to you.',right=>{state.flags.understoodPaths=right;});
+  choices([
+   {label:'Follow the northern pass marked in red.',run:()=>{state.flags.routeChosen='north';gainXP(10,'You choose the northern pass');scene(13);}},
+   {label:'Take the lower road toward the river settlements.',run:()=>{state.flags.routeChosen='river';gainXP(10,'You choose the river settlements');scene(13);}},
+   {label:'Ask Hana to explain the symbol before moving on.',run:()=>{state.flags.requestedMapLesson=true;state.vocab['道']=(state.vocab['道']||0)+1;gainXP(12,'You study the map with Hana');scene(13);}}
+  ]);
+ }
+ else if(n===13){
+  $('sceneTitle').textContent='The Other Tongue';$('sceneHeading').textContent='The world answers';$('sceneText').textContent=state.flags.routeChosen==='north'?'The northern pass opens between two walls of stone. Far below, lanterns move along a road that should be empty. Hana folds the map and walks beside you.':'The lower road follows the water through fields silvered by moonlight. Somewhere beyond the bend, a bell rings three times. Hana listens, then turns toward you as if expecting you to recognize the pattern.';
+  $('dialogue').textContent='「次は、あなたが決めて。」';$('translation').textContent='Hana places the map in your hands. She no longer points. The next mark will be yours to make.';
+  interpretation(['Next, you decide.','I will decide tomorrow.','Please take the map.'],0,'Hana is giving the next decision to you.','She lets go of the map and waits without offering another hint.',right=>{state.flags.understoodAgency=right;});
+  choices([
+   {label:'Write your own mark on the map.',run:()=>{state.flags.playerMarkedMap=true;log('You add your own mark to Hana’s map. The campaign is ready for its next chapter.');gainXP(10,'You claim a place in the map');}},
+   {label:'Ask Hana to keep the map until you are ready.',run:()=>{state.flags.hanaKeepsMap=true;state.flags.hanaTrust=(state.flags.hanaTrust||0)+1;log('Hana rolls the map carefully and keeps it safe.');gainXP(8,'You choose patience');}},
+   {label:'Walk ahead alone for a while.',run:()=>{state.flags.walkedAhead=true;state.flags.hanaTrust=(state.flags.hanaTrust||0)-1;log('You walk ahead, leaving Hana to follow at her own pace.');gainXP(8,'You choose independence');}}
+  ]);
+ }
  else if(n===99){$('sceneTitle').textContent='The End of This Journey';$('sceneHeading').textContent='The forest falls silent';$('sceneText').textContent='Your third defeat leaves you unable to rise. The path, the village, and the voices you struggled to understand fade into the cedar mist. This campaign has reached an ending. You can begin again, but this journey’s record will be replaced.';$('dialogue').textContent='「また会いましょう。」';$('translation').textContent='A final voice drifts through the trees. You cannot tell whether it is a promise or a farewell.'; $('interpretation').innerHTML='<p class="small">Three defeats. The story is over.</p>';choices([{label:'Begin a new journey (erase this campaign).',run:()=>{localStorage.removeItem(KEY);state=fresh();combatLog=[];scene(0);}}]);}
   else if(n===10){
   $('sceneTitle').textContent='Chapter 2: The Divided Road';$('sceneHeading').textContent='A new journey begins';$('sceneText').textContent=state.flags.destination==='watchtower'?'The climb begins before sunrise. Wind combs the ridge grass flat, and an abandoned watchtower stands above the pass. A thin thread of smoke rises from its upper window.':'The road descends toward the eastern water or the forgotten shrine trail, depending on the mark you chose. Somewhere ahead, a bell answers the wind. Your next chapter begins with a choice that the village cannot make for you.';
   $('dialogue').textContent='「行きましょう。」';$('translation').textContent='Hana adjusts her pack and steps onto the road. She leaves enough space for you to walk beside her, but does not take your hand.';
   interpretation(['Let us go.','Please sit down.','It is raining.'],0,'Hana is inviting you to set out.','She starts walking, glances back once, and waits at the bend.',()=>{});
-  choices([{label:'Set out into the next chapter.',run:()=>{state.flags.chapterTwoStarted=true;log('Chapter 2 begins. Your choices in Kodama remain part of the campaign record.');scene(10);}}]);
+  choices([{label:'Set out into the next chapter.',run:()=>{state.flags.chapterTwoStarted=true;log('Chapter 2 begins. Your choices in Kodama remain part of the campaign record.');scene(11);}}]);
  }
  else {scene(0);return;}
  save();
