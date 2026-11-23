@@ -14,6 +14,11 @@ assert.ok(html.includes('function challenge(attribute,difficulty)'),'Determinist
 assert.ok(html.includes("challenge('Wisdom',1)")&&html.includes("challenge('Strength',0)")&&html.includes("challenge('Dexterity',2)"),'Different abilities/difficulties must be used');
 assert.ok(html.includes('Choose your Japanese response')&&html.includes('data-response='),'Fixed Japanese response options missing');
 assert.ok(html.includes('const accepted=')&&html.includes('wrongPool')&&html.includes("tier:'poor'"),'Each dialogue needs multiple accepted responses and wrong distractors');
+assert.ok(html.includes('for(let i=playerOptions.length-1;i>0;i--)')&&html.includes('Math.random()*(i+1)'),'Japanese response options must be shuffled for every question');
+assert.ok(html.includes("'<button data-response=\"'+i+'\"><strong>'+esc(o.phrase)+'</strong></button>'"),'English meanings must not be visible before a response is selected');
+assert.ok(html.includes("if(selectedMeaning)result.innerHTML+='<p lang=\"en\"><strong>English:</strong> '"),'Selected response meaning must be revealed after selection');
+assert.ok(html.includes('Object.assign(SCENE_JA,{4:')&&html.includes("13:'山の風")&&html.includes("14:'ランタンの記録庫"),'All major scene detail sequences must have Japanese translations');
+assert.ok(html.includes('日本語で返事を選んでください')&&html.includes('場面をよく見て')&&html.includes('意味は選んだ後に表示されます'),'Japanese learning prompts must be present');
 assert.ok(html.includes('const FLASHCARDS=')&&(html.match(/jp:'/g)||[]).length>=25,'Campaign vocabulary flashcard deck is too small');
 assert.ok(html.includes('function renderFlashcard()')&&html.includes('flashcardKnown')&&html.includes('flashcardMissed'),'Flashcard progress not saved');
 assert.ok(html.includes('function bilingualize')&&html.includes('data-ja')&&html.includes('.bilingual:hover'),'Bilingual hover translation missing');
