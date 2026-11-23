@@ -45,7 +45,7 @@ const serverPath = new URL('../server.mjs', import.meta.url);
 const serverCheck = spawnSync(process.execPath, ['--check', serverPath.pathname], { encoding:'utf8' });
 assert.equal(serverCheck.status, 0, 'Server syntax check failed:\\n' + serverCheck.stderr);
 const serverSource = fs.readFileSync(serverPath, 'utf8');
-assert.ok(serverSource.includes('OPENAI_API_KEY'), 'Server must read the API key from its environment');
+assert.ok(aiServerText.includes('OPENAI_API_KEY'), 'Server must read the API key from its environment');
 assert.ok(serverSource.includes('/v1/responses'), 'Server must call the Responses API');
 assert.ok(!html.includes('OPENAI_API_KEY='), 'The browser must never contain an API key assignment');
 assert.ok(!html.includes('api.openai.com/v1/responses'), 'The browser must call only the local AI endpoint');
@@ -87,10 +87,10 @@ assert.ok(html.includes('normalizeDialogueKey(k)===normalizeDialogueKey(line)'),
 assert.ok(!html.includes("best:'hai wakarimashita',medium:['hai','wakarimashita']"), 'Unknown dialogue must not fall back to an unrelated generic answer');
 
 const aiServerPath = new URL('../server.mjs', import.meta.url);
-const serverSource = fs.readFileSync(aiServerPath, 'utf8');
-const serverSyntax = spawnSync(process.execPath, ['--check', aiServerPath.pathname], { encoding:'utf8' });
-assert.equal(serverSyntax.status, 0, 'AI server must pass Node syntax validation: ' + serverSyntax.stderr);
-assert.ok(serverSource.includes("url.pathname === '/api/language'") && serverSource.includes('async function handleLanguage'), 'The server must expose a dedicated Japanese language interpretation endpoint');
+const aiServerText = fs.readFileSync(aiServerPath, 'utf8');
+const aiServerSyntax = spawnSync(process.execPath, ['--check', aiServerPath.pathname], { encoding:'utf8' });
+assert.equal(aiServerSyntax.status, 0, 'AI server must pass Node syntax validation: ' + aiServerSyntax.stderr);
+assert.ok(aiServerText.includes("url.pathname === '/api/language'") && serverSource.includes('async function handleLanguage'), 'The server must expose a dedicated Japanese language interpretation endpoint');
 assert.ok(serverSource.includes('const languageSchema') && serverSource.includes('grammar_points') && serverSource.includes('npc_response') && serverSource.includes('next_actions'), 'The AI response must contain structured grammar feedback and procedural story content');
 assert.ok(serverSource.includes('Accept natural paraphrases') && serverSource.includes('Do not punish valid alternate wording'), 'The language judge must assess meaning and grammar, not exact phrase matches');
 assert.ok(html.includes("fetch('/api/language'") && html.includes('AI Japanese assessment') && html.includes('generatedNextActions'), 'Japanese dialogue must invoke the AI interpreter and show generated story choices');
