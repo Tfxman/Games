@@ -108,7 +108,7 @@ async function askDungeonMaster(action){
   reply.classList.remove('hidden');status.textContent='The AI DM has responded.';
   state.aiHistory.push({player:action,dm:data.narration||''});state.aiHistory=state.aiHistory.slice(-8);state.languageAssessment={level:data.language_level||'insufficient evidence',confidence:data.assessment_confidence||'low',note:data.skill_note||'',feedback:data.language_feedback||'',sample:action};
   state.events.unshift('You: '+action);state.events.unshift('DM: '+(data.narration||'The story continues.'));state.events=state.events.slice(0,80);save();
- }catch(error){status.textContent='AI DM unavailable';$('freeFeedback').textContent=error.message+' Start the local server and configure OPENAI_API_KEY.';}
+ }catch(error){status.textContent='AI DM unavailable';$('freeFeedback').textContent=(error instanceof TypeError?'The hosted static game does not include the AI server. You can still play the scripted campaign; use the local Node server with OPENAI_API_KEY for AI Dungeon Master turns.':error.message+' Start the local server and configure OPENAI_API_KEY.');}
  finally{send.disabled=false;}
 }
 $('submitFree').addEventListener('click',()=>{const t=$('freeInput').value.trim();if(!t)return;askDungeonMaster(t);$('freeInput').value='';});
