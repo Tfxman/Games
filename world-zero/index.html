@@ -88,7 +88,7 @@ $('equipped').innerHTML='<p>⚔ Weapon · '+c.weapon+'</p><p>⛨ Armor · '+c.ar
 $('questList').innerHTML=[['The Stranger',state.quests.stranger,'Find shelter and learn where you are.'],['A Child Missing',state.quests.missing,'Find the missing child and discover what haunts the shrine.']].map(q=>'<div class="card"><div class="row"><strong>'+q[0]+'</strong><span class="pill">'+q[1]+'</span></div><p>'+q[2]+'</p></div>').join('');
 $('eventLog').innerHTML=state.events.map(x=>'<div class="log-entry">'+esc(x)+'</div>').join('');
 $('vocabulary').innerHTML=Object.entries(state.vocab).map(([w,n])=>'<div class="row"><strong>'+w+'</strong><span class="pill">Practiced '+n+'×</span></div>').join('<hr>');
-$('learningProfile').innerHTML='<p>Current level: <strong>Beginner</strong></p><p>Vocabulary attempts: <strong>'+Object.values(state.vocab).reduce((a,b)=>a+b,0)+'</strong></p><p>Independent Japanese attempts: <strong>'+state.events.filter(x=>x.includes('Japanese')).length+'</strong></p>';
+const assessment=state.languageAssessment||{level:'insufficient evidence',confidence:'low',note:'No writing sample has been assessed yet.',feedback:''};$('learningProfile').innerHTML='<p>Latest writing estimate: <strong>'+esc(assessment.level)+'</strong></p><p>Confidence: <strong>'+esc(assessment.confidence)+'</strong> · Text-only evidence</p><p>'+esc(assessment.note||'No writing sample has been assessed yet.')+'</p><p>Vocabulary attempts: <strong>'+Object.values(state.vocab).reduce((a,b)=>a+b,0)+'</strong></p><p class="small muted">This is formative feedback from recent text, not a certified placement test or an assessment of listening/speaking.</p>';
 renderMoves();}
 $('saveCharacter').addEventListener('click',()=>{state.name=$('charName').value.trim()||'Ari';state.species=$('charSpecies').value;state.background=$('charBackground').value;const next=$('charClass').value;if(next!==state.klass){state.klass=next;const c=klass();state.maxHp=c.hp+Math.max(0,mod(state.stats.Constitution));state.hp=Math.min(state.hp,state.maxHp);state.maxMana=c.mana;state.mana=c.mana;state.maxStamina=c.stamina;state.stamina=c.stamina;state.unlocked=[];}log('Character updated. Your class path is '+state.klass+'.');});
 
@@ -106,7 +106,7 @@ async function askDungeonMaster(action){
   $('aiSuggestions').innerHTML=(data.suggested_actions||[]).map((s,i)=>'<button data-ai-action="'+i+'">'+esc(s)+'</button>').join('');
   $('aiSuggestions').querySelectorAll('[data-ai-action]').forEach(b=>b.addEventListener('click',()=>{const suggestion=data.suggested_actions[Number(b.dataset.aiAction)];$('freeInput').value=suggestion;askDungeonMaster(suggestion);}));
   reply.classList.remove('hidden');status.textContent='The AI DM has responded.';
-  state.aiHistory.push({player:action,dm:data.narration||''});state.aiHistory=state.aiHistory.slice(-8);
+  state.aiHistory.push({player:action,dm:data.narration||''});state.aiHistory=state.aiHistory.slice(-8);state.languageAssessment={level:data.language_level||'insufficient evidence',confidence:data.assessment_confidence||'low',note:data.skill_note||'',feedback:data.language_feedback||'',sample:action};
   state.events.unshift('You: '+action);state.events.unshift('DM: '+(data.narration||'The story continues.'));state.events=state.events.slice(0,80);save();
  }catch(error){status.textContent='AI DM unavailable';$('freeFeedback').textContent=error.message+' Start the local server and configure OPENAI_API_KEY.';}
  finally{send.disabled=false;}
