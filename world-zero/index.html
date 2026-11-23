@@ -97,7 +97,8 @@ const RESPONSE_ACCEPTANCE={
 };
 function validateJapaneseResponse(key,raw,converted,config,roman){
  const rules=RESPONSE_ACCEPTANCE[key],norm=normalizeKana(converted),rawNorm=normalizeKana(raw);
- const exact=items=>items.some(x=>{const n=normalizeKana(x);return n===norm||n===rawNorm;});
+ const canonical=x=>{const value=String(x);return normalizeKana(/^[a-zA-Z\\s']+$/.test(value)?romajiToKana(value):value);};
+ const exact=items=>items.some(x=>{const n=canonical(x);return n===norm||n===rawNorm;});
  if(rules){if(exact(rules.best)||exact(rules.romajiBest)||exact([config.best])||exact([roman.best]))return 'good';if(exact(rules.good)||exact(rules.romajiGood)||exact(config.medium||[])||exact(roman.medium||[]))return 'medium';return 'incorrect';}
  if(config.best&&exact([config.best,roman.best]))return 'good';
  if(exact([...(config.medium||[]),...(roman.medium||[])]))return 'medium';
