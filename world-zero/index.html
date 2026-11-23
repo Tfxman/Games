@@ -166,10 +166,38 @@ function interpretation(options,correct,meaning,clue,onGuess){
   state.events.unshift(detail+' ('+tier+' communication)');state.events=state.events.slice(0,80);
   box.querySelectorAll('[data-gesture],#sendJapanese,#jpReply').forEach(x=>x.disabled=true);save();
  }
- function speak(){
+ async function speak(){
   const raw=$('jpReply').value.trim();if(!raw){result.textContent='Enter Japanese or romaji, or choose a gesture.';return;}
-  const isRomaji=/^[a-zA-Z\s']+$/.test(raw),converted=isRomaji?romajiToKana(raw):raw;
+  const isRomaji=/^[a-zA-Z\\s']+$/.test(raw),converted=isRomaji?romajiToKana(raw):raw;
   $('jpConversion').textContent=isRomaji?'Kana conversion: '+converted:'Japanese input recognized: '+converted;
+  const send=$('sendJapanese');send.disabled=true;result.textContent='Checking your Japanese in context and considering how the story responds…';
+  try{
+   const response=await fetch('/api/language',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    npc_line:line,npc_intent:config.intent||meaning,scene_context:$('sceneText').textContent+' '+$('translation').textContent,
+    player_reply:raw,kana_conversion:converted,immersion_stage:stage,character_level:state.level,
+    relationship_context:'Hana trust: '+(state.flags.hanaTrust||0),recent_events:state.events.slice(0,6),recent_turns:state.aiHistory.slice(-4)
+   })});
+   const data=await response.json().catch(()=>({}));
+   if(!response.ok)throw new Error(data.error||'AI language service unavailable.');
+   if(data.verdict==='uncertain')throw new Error('The AI could not confidently assess this response; using the local phrase checker instead.');
+   const tier=data.verdict==='inappropriate'?'poor':data.verdict==='partly_appropriate'||data.grammar_accuracy!=='natural'?'medium':'good';
+   const points=Array.isArray(data.grammar_points)?data.grammar_points:[];
+   const grammar=esc(data.grammar_feedback||'Your response has been evaluated in context.');
+   const corrected=data.corrected_japanese?'<p><strong>Correction:</strong> '+esc(data.corrected_japanese)+'</p>':'';
+   const alternative=data.natural_alternative?'<p><strong>Another natural way:</strong> '+esc(data.natural_alternative)+'</p>':'';
+   const pointHtml=points.length?'<ul>'+points.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'';
+   const feedback='<p><strong>What you meant:</strong> '+esc(data.intended_meaning||'Meaning assessed from context.')+'</p><p>'+grammar+'</p>'+pointHtml+corrected+alternative+'<p class="small muted">AI assessment confidence: '+esc(data.confidence||'low')+'. This is contextual language feedback, not a formal proficiency certification.</p>';
+   resolve(tier,'AI Japanese assessment: '+raw,feedback);
+   result.innerHTML+='<hr><p><strong>Story response</strong></p><p>'+esc(data.narration||'The moment continues…')+'</p><p class="dialogue">'+esc(data.npc_response||'')+'</p><p class="small muted">Context clue: '+esc(data.contextual_clue||'Watch the character’s expression and actions.')+'</p><p><strong>What will you do next?</strong></p><div class="choices" id="generatedNextActions">'+(data.next_actions||[]).map((x,i)=>'<button data-generated-action="'+i+'">'+esc(x)+'</button>').join('')+'</div>';
+   $('generatedNextActions').querySelectorAll('[data-generated-action]').forEach(b=>b.addEventListener('click',()=>{const action=data.next_actions[Number(b.dataset.generatedAction)];$('freeInput').value=action;askDungeonMaster(action);}));
+   state.aiHistory.push({player:raw,dm:(data.narration||'')+' '+(data.npc_response||'')});state.aiHistory=state.aiHistory.slice(-8);
+   state.events.unshift('You (Japanese): '+raw);state.events.unshift('Story: '+(data.narration||'The scene continues.'));state.events=state.events.slice(0,80);save();
+   $('aiStatus').textContent='AI Japanese assessment and story response complete.';
+   return;
+  }catch(error){
+   $('aiStatus').textContent='Using local Japanese checker';
+   $('freeFeedback').textContent='AI grammar/story engine unavailable for this turn ('+error.message+'). The local phrase checker will still evaluate known answers. For AI understanding and generated story turns, run the local Node server with OPENAI_API_KEY.';
+  }
   const expected=config.best||'a context-appropriate Japanese response',validation=validateJapaneseResponse(key,raw,converted,config,roman);
   if(validation==='good'){resolve('good','Clear Japanese response: '+raw,'<p>Your response is correct for this situation and communicates the intended meaning naturally.</p>');return;}
   if(validation==='medium'){resolve('medium','Understandable Japanese response: '+raw,'<p>Your response is valid and appropriate. It communicates the right idea, even if another phrasing may be more complete.</p><p>One natural phrasing: '+esc(config.best||'')+' '+(roman.best?'('+esc(roman.best)+')':'')+'.</p>');return;}
