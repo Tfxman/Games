@@ -18,7 +18,7 @@ assert.ok(html.includes('const FLASHCARDS=')&&(html.match(/jp:'/g)||[]).length>=
 assert.ok(html.includes('function renderFlashcard()')&&html.includes('flashcardKnown')&&html.includes('flashcardMissed'),'Flashcard progress not saved');
 assert.ok(html.includes('function bilingualize')&&html.includes('data-ja')&&html.includes('.bilingual:hover'),'Bilingual hover translation missing');
 const clueDeclaration=html.indexOf('const CLUE_JA=');const clueExtension=html.indexOf('Object.assign(CLUE_JA,');assert.ok(clueDeclaration>=0&&clueExtension>clueDeclaration,'CLUE_JA must be initialized before translations are added; prevents startup ReferenceError');
-const bilingualDeclaration=html.indexOf('const BILINGUAL=');const bilingualExtensions=[...html.matchAll(/Object\\.assign\\(BILINGUAL,/g)].map(m=>m.index);assert.ok(bilingualDeclaration>=0&&bilingualExtensions.every(i=>i>bilingualDeclaration),'BILINGUAL must be initialized before extension');
+const bilingualDeclaration=html.indexOf('const BILINGUAL=');const bilingualExtension=html.indexOf('Object.assign(BILINGUAL,');assert.ok(bilingualDeclaration>=0&&bilingualExtension>bilingualDeclaration,'BILINGUAL must be initialized before extension');
 assert.ok(html.includes('visibleQuests')&&html.includes("q[1]!=='hidden'"),'Hidden quests must stay hidden');
 assert.ok(html.includes('const ENDINGS=[')&&(html.match(/epitaph:'/g)||[]).length===14,'Fourteen campaign endings must remain');
 assert.ok(html.includes("else if(n===11)")&&html.includes("else if(n===12)")&&html.includes("else if(n===13)"),'Three chapter-two routes must remain');
