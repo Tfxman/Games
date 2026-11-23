@@ -103,7 +103,7 @@ async function askDungeonMaster(action){
   const response=await fetch('/api/dm',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
   const data=await response.json().catch(()=>({}));
   if(!response.ok)throw new Error(data.error||('DM request failed ('+response.status+').'));
-  $('aiNarration').textContent=data.narration||'The scene continues…';$('aiJapanese').textContent=data.japanese_dialogue||'';$('aiTranslation').textContent=data.translation||'';
+  $('aiNarration').textContent=data.narration||'The scene continues…';$('aiJapanese').textContent=data.japanese_dialogue||'';$('aiTranslation').textContent='Context clue: '+(data.translation||'Watch the speaker’s expression and gestures.');
   $('aiFeedback').textContent=data.language_feedback||'Keep experimenting with the language.';
   $('aiAssessment').textContent='Language evidence: '+(data.assessment_confidence||'low')+' confidence · '+(data.language_level||'not yet estimated')+' · '+(data.skill_note||'Keep practicing in context.');
   $('aiSuggestions').innerHTML=(data.suggested_actions||[]).map((s,i)=>'<button data-ai-action="'+i+'">'+esc(s)+'</button>').join('');
