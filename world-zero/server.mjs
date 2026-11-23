@@ -130,7 +130,9 @@ const server = http.createServer(async (req, res) => {
   try { pathname = decodeURIComponent(url.pathname); } catch { return send(res, 400, {error:'Invalid path.'}); }
   if (pathname === '/') pathname = '/index.html';
   const filename = path.resolve(ROOT, '.' + pathname);
-  if (!filename.startsWith(ROOT + path.sep) && filename !== ROOT) return send(res, 403, {error:'Forbidden.'});
+  const relative = path.relative(ROOT, filename);
+  const publicExtensions = new Set(['.html','.js','.css','.png','.jpg','.jpeg','.webp','.svg','.woff2']);
+  if ((!filename.startsWith(ROOT + path.sep) && filename !== ROOT) || relative.split(path.sep).some(part => part.startsWith('.')) || !publicExtensions.has(path.extname(filename))) return send(res, 404, {error:'Not found.'});
   fs.stat(filename, (error, stat) => {
     if (error || !stat.isFile()) return send(res, 404, {error:'Not found.'});
     res.writeHead(200, {
