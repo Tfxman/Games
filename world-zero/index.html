@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#211a17">
+<title>WORLD ZERO — The Other Tongue</title>
+<style>
+:root{--ink:#2d211b;--muted:#78685a;--paper:#eee2c9;--paper2:#e3d1ad;--edge:#b69b70;--dark:#211a17;--gold:#b88a43;--red:#8c3c31;--green:#526b4b;--shadow:0 12px 30px #0005}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#574332,#211a17 72%);color:var(--ink);font:15px/1.5 Georgia,"Times New Roman",serif;min-height:100vh}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.shell{max-width:1440px;margin:auto;padding:20px}
+header{display:flex;align-items:center;justify-content:space-between;gap:18px;color:#f3e8d3;padding:8px 4px 20px}
+.brand{display:flex;align-items:center;gap:14px}.sigil{width:48px;height:48px;border:1px solid #c5a66d;border-radius:50%;display:grid;place-items:center;font-size:25px;color:#d7b675;box-shadow:inset 0 0 0 4px #ffffff12}
+h1{font-size:clamp(22px,3vw,32px);letter-spacing:.12em;margin:0}.tagline{color:#cdbb9d;font-style:italic;font-size:13px}
+.header-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.save-state{font-size:12px;color:#d6c5a6}
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:16px;align-items:start}
+.panel,.sidebar{background:linear-gradient(145deg,var(--paper),#dfcfad);border:1px solid var(--edge);box-shadow:var(--shadow);position:relative}
+.panel:before,.sidebar:before{content:"";position:absolute;inset:5px;border:1px solid #a98c604f;pointer-events:none}
+.sidebar{padding:18px 14px;min-height:690px}.nav-title{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:8px 10px 12px}
+.nav{display:grid;gap:5px}.nav button{border:1px solid transparent;background:transparent;text-align:left;padding:10px 12px;color:var(--ink);display:flex;gap:10px;align-items:center}.nav button:hover,.nav button.active{background:#b88a4324;border-color:#b88a4370}.nav .ico{width:20px;text-align:center;font-size:17px}
+.sidebar-note{border-top:1px solid #b69b70;margin-top:22px;padding:15px 8px 0;color:var(--muted);font-size:13px}
+.main{min-width:0}.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;color:#eadcc4}.crumb{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#c7b18d}
+.content{padding:28px;min-height:690px}.view{display:none}.view.active{display:block}
+h2{font-size:27px;margin:0 0 5px;font-weight:normal}.subtitle{color:var(--muted);margin:0 0 22px;font-style:italic}
+h3{font-size:17px;margin:0 0 12px;border-bottom:1px solid #b69b7077;padding-bottom:7px}
+.grid{display:grid;gap:14px}.two{grid-template-columns:repeat(2,minmax(0,1fr))}.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.card{background:#f6eddc9c;border:1px solid #b69b708c;padding:16px;min-width:0}.card p{margin:5px 0}.muted{color:var(--muted)}.small{font-size:12px}.stat{font-size:25px;color:#49372a}.stat-label{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px}.pill{display:inline-block;border:1px solid #a98b5f;padding:2px 8px;border-radius:20px;font-size:11px;color:#614b32;background:#c4a36a24}
+.btn{border:1px solid #725632;background:#49372a;color:#f5e9d3;padding:9px 14px}.btn:hover{background:#634b32}.btn.secondary{background:transparent;color:var(--ink);border-color:#a98b5f}.btn.gold{background:#9a7135;border-color:#795526}.btn.smallbtn{padding:5px 9px;font-size:12px}
+input,select,textarea{width:100%;background:#fbf4e7;border:1px solid #b69b70;padding:9px;color:var(--ink)}label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:5px}.field{margin-bottom:12px}
+.bar{height:8px;background:#c7b797;overflow:hidden;border-radius:10px}.bar span{display:block;height:100%;background:var(--green)}
+.avatar{width:68px;height:68px;border-radius:50%;background:#49372a;color:#e7d2a9;display:grid;place-items:center;font-size:30px;border:3px double #c5a66d}
+.scene{background:linear-gradient(#34271fbb,#34271fdd),radial-gradient(ellipse at 50% 0%,#a68a60,#3b2a20);color:#f3e6cf;padding:22px;border:1px solid #9b7948;min-height:180px;margin-bottom:16px}
+.scene h3{color:#e9d2a4;border-color:#c6a56b66}.scene p{color:#eadcc7}.dialogue{font-size:20px;color:#f2d79d;margin:12px 0}.choices{display:grid;gap:8px}.choices button{background:#f4ead7;border:1px solid #b69b70;padding:11px;text-align:left;color:var(--ink)}.choices button:hover{background:#e4d2ad}
+.log{max-height:250px;overflow:auto;display:grid;gap:8px}.log-entry{border-left:3px solid #b88a43;padding:5px 10px;background:#f6eddc99;font-size:13px}
+.map{position:relative;min-height:350px;background:radial-gradient(ellipse,#d9c49a,#b6a078);border:1px solid #92774e;overflow:hidden;padding:18px}
+.map:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(25deg,transparent 0 40px,#806d4920 41px 42px),repeating-linear-gradient(115deg,transparent 0 55px,#806d4918 56px 57px)}
+.map-label{position:absolute;background:#f4e8cfdd;border:1px solid #9b8158;padding:5px 9px;font-size:12px;z-index:1}.map-pin{position:absolute;border:0;background:#49372a;color:#f5e9d3;border-radius:50%;width:32px;height:32px;z-index:2}.map-pin:hover{background:#9a7135}
+hr{border:0;border-top:1px solid #b69b70;margin:18px 0}
+footer{color:#c5b18e;text-align:center;font-size:12px;padding:18px}
+.notice{background:#d7c59e;border-left:3px solid #9a7135;padding:10px 13px;font-size:13px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.sidebar{min-height:0;padding:12px}.nav{grid-template-columns:repeat(4,1fr)}.nav button{justify-content:center;padding:9px 4px;font-size:12px}.nav button .label{display:none}.sidebar-note{display:none}.content{min-height:600px;padding:20px}.two,.three{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.shell{padding:10px}.brand{gap:8px}.sigil{width:38px;height:38px}.tagline{display:none}.header-right .save-state{display:none}.nav{grid-template-columns:repeat(4,1fr)}.two,.three{grid-template-columns:1fr}.content{padding:16px}.topline{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header>
+  <div class="brand"><div class="sigil">✦</div><div><h1>WORLD ZERO</h1><div class="tagline">The Other Tongue · A language-learning fantasy RPG</div></div></div>
+  <div class="header-right"><span class="save-state" id="saveState">Demo campaign · local save</span><button class="btn secondary smallbtn" id="resetBtn">Reset demo</button></div>
+</header>
+<div class="layout">
+<aside class="sidebar">
+  <div class="nav-title">Campaign menu</div>
+  <nav class="nav" aria-label="Main navigation">
+    <button class="active" data-view="adventure"><span class="ico">⚔</span><span class="label">Adventure</span></button>
+    <button data-view="character"><span class="ico">♙</span><span class="label">Character</span></button>
+    <button data-view="party"><span class="ico">♟</span><span class="label">Party</span></button>
+    <button data-view="inventory"><span class="ico">⚒</span><span class="label">Gear</span></button>
+    <button data-view="map"><span class="ico">⌖</span><span class="label">World map</span></button>
+    <button data-view="quests"><span class="ico">⚑</span><span class="label">Quests</span></button>
+    <button data-view="journal"><span class="ico">▤</span><span class="label">Journal</span></button>
+    <button data-view="language"><span class="ico">文</span><span class="label">Japanese</span></button>
+  </nav>
+  <div class="sidebar-note"><strong>THE FRONTIER</strong><p>Unknown roads. A language you barely understand. A world that will remember what you do.</p><span class="pill">Chapter 1 · The Stranger</span></div>
+</aside>
+<main class="main">
+  <div class="topline"><span class="crumb" id="crumb">Campaign / Adventure</span><span class="pill">Single-player prototype</span></div>
+  <section class="panel content">
+    <div class="view active" id="view-adventure">
+      <div class="row"><div><h2>The Stranger</h2><p class="subtitle">A quiet forest, an unfamiliar sky, and a voice you cannot understand.</p></div><span class="pill">Chapter 1</span></div>
+      <div class="scene">
+        <div class="small" style="letter-spacing:.16em;color:#d9bd83">THE EDGE OF KODAMA FOREST</div>
+        <h3 style="margin-top:8px">A traveler approaches</h3>
+        <p>You wake beneath cedar trees. Your head aches. A narrow path winds toward distant rooftops. A traveler carrying a wooden pack stops a few paces away, studying you with concern.</p>
+        <div class="dialogue">「大丈夫ですか？」</div>
+        <p class="small">Dai-jōbu desu ka? · The traveler gestures toward you, waiting for a response.</p>
+      </div>
+      <div class="grid two">
+        <div class="card"><h3>Your current state</h3><div class="row"><span>Health</span><strong id="hpText">10 / 10</strong></div><div class="bar"><span id="hpBar" style="width:100%"></span></div><div class="row" style="margin-top:12px"><span>Level</span><strong id="levelText">1</strong></div><div class="row"><span>Experience</span><strong id="xpText">0 XP</strong></div></div>
+        <div class="card"><h3>Party status</h3><p><strong id="heroNameSmall">Ari</strong> · <span id="heroClassSmall">Adventurer</span></p><p class="muted small">No companions have joined yet.</p><p class="small">A stranger's first impression may shape the road ahead.</p></div>
+      </div>
+      <h3 style="margin-top:20px">How do you respond?</h3>
+      <div class="choices" id="choices">
+        <button data-choice="greet">「こんにちは」— Try a greeting. <span class="muted small">Konnichiwa · Hello</span></button>
+        <button data-choice="help">「助けてください」— Ask for help. <span class="muted small">Tasukete kudasai · Please help me</span></button>
+        <button data-choice="gesture">Point to yourself and gesture that you are confused.</button>
+        <button data-choice="observe">Stay quiet and observe the traveler's expression and gestures.</button>
+      </div>
+      <div class="notice" style="margin-top:14px">Prototype note: these choices demonstrate the intended story and language loop. The AI Dungeon Master and adaptive assessment will be connected in a later phase.</div>
+      <h3 style="margin-top:20px">Recent events</h3><div class="log" id="recentLog"></div>
+    </div>
+    <div class="view" id="view-character">
+      <h2>Character sheet</h2><p class="subtitle">Your identity in this unfamiliar world.</p>
+      <div class="row" style="justify-content:flex-start;margin-bottom:18px"><div class="avatar" id="avatar">A</div><div><h3 id="characterHeading" style="border:0;margin:0">Ari</h3><span class="muted" id="characterSub">Human · Adventurer · Level 1</span></div></div>
+      <div class="grid two">
+        <div class="card"><h3>Character details</h3><div class="field"><label for="charName">Name</label><input id="charName" value="Ari" maxlength="24"></div><div class="field"><label for="charSpecies">Species</label><select id="charSpecies"><option>Human</option><option>Elf</option><option>Dwarf</option><option>Halfling</option><option>Other</option></select></div><div class="field"><label for="charClass">Class</label><select id="charClass"><option>Adventurer</option><option>Warrior</option><option>Mage</option><option>Rogue</option><option>Cleric</option></select></div><div class="field"><label for="charBackground">Background</label><input id="charBackground" value="Outsider" maxlength="40"></div><button class="btn gold" id="saveCharacter">Save character</button></div>
+        <div class="card"><h3>Attributes</h3><div id="stats"></div><p class="muted small">Starting values are illustrative. Character-building rules will be formalized in Phase 2.</p></div>
+      </div>
+    </div>
+    <div class="view" id="view-party">
+      <h2>Party</h2><p class="subtitle">Allies, companions, and fellow travelers.</p>
+      <div class="card"><div class="row"><div class="row" style="justify-content:flex-start"><div class="avatar">A</div><div><strong id="partyName">Ari</strong><div class="muted small" id="partyRole">Level 1 · Adventurer</div></div></div><span class="pill">You</span></div><hr><p class="muted">Your journey has just begun. Companions you meet can join the party, develop relationships, and contribute their own skills and language abilities.</p></div>
+      <div class="notice" style="margin-top:14px">Multiplayer parties will use individual player accounts and characters in a shared persistent campaign. Online party features are not connected yet.</div>
+    </div>
+    <div class="view" id="view-inventory">
+      <h2>Inventory & gear</h2><p class="subtitle">Everything you carry into the unknown.</p>
+      <div class="grid two"><div class="card"><h3>Equipped</h3><p>⚔ <strong>Weapon</strong> · None</p><p>⛨ <strong>Armor</strong> · Traveler's clothes</p><p>✧ <strong>Accessory</strong> · None</p></div><div class="card"><h3>Pack</h3><div id="items"><p class="muted">Your pack is empty.</p></div><button class="btn secondary smallbtn" id="addItem">Add test item</button></div></div>
+    </div>
+    <div class="view" id="view-map">
+      <h2>World map</h2><p class="subtitle">The known edge of the Aokigahara frontier.</p>
+      <div class="map"><div class="map-label" style="left:9%;top:13%">Misty Ridge</div><div class="map-label" style="left:62%;top:12%">Old Watchtower</div><div class="map-label" style="left:38%;top:72%">Kodama Village</div><div class="map-label" style="left:7%;top:78%">Cedar Shrine</div><button class="map-pin" title="Forest clearing" style="left:49%;top:42%" data-place="Forest clearing">✦</button><button class="map-pin" title="Kodama Village" style="left:51%;top:65%" data-place="Kodama Village">⌂</button><button class="map-pin" title="Old Watchtower" style="left:76%;top:26%" data-place="Old Watchtower">♜</button></div>
+      <p class="muted small">Map locations are illustrative. Discoveries and travel rules will be connected to campaign state in a later phase.</p><div id="placeInfo" class="notice">Select a marker to inspect a location.</div>
+    </div>
+    <div class="view" id="view-quests">
+      <h2>Quests & missions</h2><p class="subtitle">Threads of trouble, opportunity, and discovery.</p>
+      <div class="card"><div class="row"><strong>The Stranger</strong><span class="pill">Main story</span></div><p class="muted">Find shelter and learn where you are.</p><div class="small">Objective: Speak with the traveler.</div><hr><div class="row"><strong>A Child Missing</strong><span class="pill">Rumor</span></div><p class="muted">Villagers whisper about a child who did not return from the forest.</p><div class="small">Objective: Not yet discovered.</div></div>
+    </div>
+    <div class="view" id="view-journal">
+      <h2>Journal & event history</h2><p class="subtitle">The world remembers. Your journal helps you remember, too.</p><div class="log" id="fullLog"></div><p class="muted small" style="margin-top:14px">This prototype stores a local event summary. The production campaign log will be persistent and shared with the AI DM.</p>
+    </div>
+    <div class="view" id="view-language">
+      <h2>Japanese notebook</h2><p class="subtitle">Words become tools. Understanding opens doors.</p>
+      <div class="grid two">
+        <div class="card"><h3>Learning profile</h3><div class="stat">Beginner</div><p class="muted small">Illustrative starting profile · Not an official JLPT assessment.</p><div class="row"><span>Vocabulary</span><strong>1 / 5</strong></div><div class="bar"><span style="width:20%"></span></div><div class="row" style="margin-top:10px"><span>Reading</span><strong>1 / 5</strong></div><div class="bar"><span style="width:20%"></span></div><div class="row" style="margin-top:10px"><span>Listening</span><strong>0 / 5</strong></div><div class="bar"><span style="width:5%"></span></div><div class="row" style="margin-top:10px"><span>Speaking</span><strong>0 / 5</strong></div><div class="bar"><span style="width:5%"></span></div></div>
+        <div class="card"><h3>Words encountered</h3><p><strong>大丈夫</strong> <span class="muted">daijōbu</span><br><span class="small">Okay · all right · safe</span></p><hr><p><strong>ですか</strong> <span class="muted">desu ka</span><br><span class="small">Question ending / polite question</span></p><hr><p><strong>こんにちは</strong> <span class="muted">konnichiwa</span><br><span class="small">Hello / good afternoon</span></p><hr><p><strong>助けてください</strong> <span class="muted">tasukete kudasai</span><br><span class="small">Please help me</span></p></div>
+      </div>
+      <div class="notice" style="margin-top:14px">Learning design: the future engine will separately track recognition, comprehension, independent production, and transfer to new contexts. This screen currently contains sample vocabulary only.</div>
+    </div>
+  </section>
+</main>
+</div>
+<footer>WORLD ZERO · Prototype v0.1 · A campaign begins with a single word.</footer>
+</div>
+<script>
+const KEY='world-zero-demo-v1';
+const defaults={name:'Ari',species:'Human',klass:'Adventurer',background:'Outsider',hp:10,maxHp:10,level:1,xp:0,items:[],events:[{text:'You awaken in a forest beneath an unfamiliar sky.',time:'The beginning'}],stats:{Strength:10,Dexterity:10,Constitution:10,Intelligence:10,Wisdom:10,Charisma:10}};
+let state=load();
+function load(){try{return {...defaults,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch{return {...defaults}}}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));document.getElementById('saveState').textContent='Saved locally · '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});render()}
+function event(text){state.events.unshift({text,time:new Date().toLocaleString()});save()}
+function render(){
+ const name=state.name||'Ari';
+ document.getElementById('heroNameSmall').textContent=name;document.getElementById('heroClassSmall').textContent=state.klass;
+ document.getElementById('hpText').textContent=state.hp+' / '+state.maxHp;document.getElementById('hpBar').style.width=(state.hp/state.maxHp*100)+'%';
+ document.getElementById('levelText').textContent=state.level;document.getElementById('xpText').textContent=state.xp+' XP';
+ document.getElementById('characterHeading').textContent=name;document.getElementById('characterSub').textContent=state.species+' · '+state.klass+' · Level '+state.level;document.getElementById('avatar').textContent=name.charAt(0).toUpperCase();
+ document.getElementById('partyName').textContent=name;document.getElementById('partyRole').textContent='Level '+state.level+' · '+state.klass;
+ document.getElementById('charName').value=name;document.getElementById('charSpecies').value=state.species;document.getElementById('charClass').value=state.klass;document.getElementById('charBackground').value=state.background;
+ document.getElementById('stats').innerHTML=Object.entries(state.stats).map(([k,v])=>'<div class="row" style="margin:8px 0"><span>'+k+'</span><strong>'+v+'</strong></div>').join('');
+ document.getElementById('items').innerHTML=state.items.length?state.items.map(x=>'<p>◆ '+escapeHtml(x)+'</p>').join(''):'<p class="muted">Your pack is empty.</p>';
+ const log=state.events.map(x=>'<div class="log-entry"><strong>'+escapeHtml(x.time)+'</strong><br>'+escapeHtml(x.text)+'</div>').join('');
+ document.getElementById('recentLog').innerHTML=log||'<p class="muted">No events yet.</p>';document.getElementById('fullLog').innerHTML=log||'<p class="muted">No events yet.</p>';
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+document.querySelectorAll('[data-view]').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b===btn));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id==='view-'+btn.dataset.view));document.getElementById('crumb').textContent='Campaign / '+btn.dataset.view.replace(/^./,c=>c.toUpperCase())}));
+document.getElementById('saveCharacter').addEventListener('click',()=>{state.name=document.getElementById('charName').value.trim()||'Ari';state.species=document.getElementById('charSpecies').value;state.klass=document.getElementById('charClass').value;state.background=document.getElementById('charBackground').value.trim();event('You updated your character profile.');});
+document.getElementById('addItem').addEventListener('click',()=>{const names=['Traveler’s cloak','Small healing tonic','Weathered journal','Copper coin'];const item=names.find(n=>!state.items.includes(n))||'Bundle of herbs';state.items.push(item);event('Added '+item+' to your pack.');});
+document.querySelectorAll('[data-choice]').forEach(btn=>btn.addEventListener('click',()=>{
+ const choice=btn.dataset.choice;let reply='';
+ if(choice==='greet'){reply='The traveler smiles at your attempt. “こんにちは,” they reply, then point toward the village. You recognize a greeting in return.';state.xp+=5;}
+ if(choice==='help'){reply='You carefully say, “助けてください.” The traveler catches the meaning and offers a hand, speaking slowly: “村… village.”';state.xp+=8;}
+ if(choice==='gesture'){reply='You point to yourself and spread your hands. The traveler nods, then gestures down the path and offers you water.';state.xp+=4;}
+ if(choice==='observe'){reply='The traveler’s brow softens. They point to your head, then raise a waterskin. You infer they are asking if you are all right.';state.xp+=3;}
+ document.querySelector('.scene').insertAdjacentHTML('beforeend','<p style="border-top:1px solid #c6a56b66;padding-top:12px"><strong>Outcome:</strong> '+reply+'</p>');
+ document.getElementById('choices').innerHTML='<button id="continueBtn">Continue toward the village →</button>';
+ document.getElementById('continueBtn').addEventListener('click',()=>{event('You responded to the traveler. '+reply);document.getElementById('choices').innerHTML='<p class="notice">The road to Kodama Village is open. The next scene will be developed as part of the opening adventure.</p>';});
+ event('You chose to '+({greet:'greet the traveler',help:'ask for help',gesture:'communicate through gestures',observe:'observe before responding'}[choice])+'.');
+}));
+document.querySelectorAll('[data-place]').forEach(b=>b.addEventListener('click',()=>{document.getElementById('placeInfo').textContent=b.dataset.place+': '+({'Forest clearing':'Where you first awoke.','Kodama Village':'A small settlement at the edge of the forest.','Old Watchtower':'An unexplored structure on the ridge.'}[b.dataset.place]||'An unexplored location.');}));
+document.getElementById('resetBtn').addEventListener('click',()=>{if(confirm('Reset your local demo campaign? This cannot be undone.')){localStorage.removeItem(KEY);state={...defaults,events:[...defaults.events]};document.querySelector('.scene').querySelectorAll('p[style]').forEach(x=>x.remove());document.getElementById('choices').innerHTML='<button data-choice="greet">「こんにちは」— Try a greeting. <span class="muted small">Konnichiwa · Hello</span></button><button data-choice="help">「助けてください」— Ask for help. <span class="muted small">Tasukete kudasai · Please help me</span></button><button data-choice="gesture">Point to yourself and gesture that you are confused.</button><button data-choice="observe">Stay quiet and observe the traveler’s expression and gestures.</button>';document.querySelectorAll('[data-choice]').forEach(btn=>btn.addEventListener('click',()=>location.reload()));save();location.reload();}});
+render();
+</script>
+</body>
+</html>
