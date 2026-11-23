@@ -18,7 +18,10 @@ Implemented:
 - Meaningful failure states: failed investigations, abandoned or failed quests, lost NPC trust, resource loss, and campaign-ending defeat after three combat defeats
 - Prerequisite-aware choices: unavailable story options and unaffordable combat moves are hidden; healing, wards, and ranged attacks respect current HP, active wards, and ammunition
 - Adaptive Japanese immersion with four starting levels (Guided, Supported, Balanced, Full immersion), adjusted from accumulated communication results
-- Two response modes for dialogue: type Japanese or choose a gesture; exact Japanese is the best tier, partial Japanese or a successful gesture earns a good tier, and poor communication can produce the worst result
+- Unified scene interaction: response and action choices appear together; players can speak, act without speaking, or respond first and then take an action
+- Japanese input accepts kana/kanji or romaji, with romanized text converted to hiragana for display and checking; incorrect attempts show a target phrase and rule-based feedback about the mismatch
+- Two communication modes: type Japanese or choose a gesture; exact Japanese is the best tier, partial Japanese or a successful gesture earns a good tier, and poor communication can produce the worst result
+- Expanded sensory descriptions for Hana, the village, forest, shrine guardian, rescued child, and chapter locations
 - d20 + Wisdom gesture checks; d20 + Intelligence can help repair an incorrect Japanese response; outcomes affect trust, later reactions, and immersion level
 - Context-first Japanese dialogue: infer meaning from gestures, tone, and scene clues; mistakes change NPC reactions and relationship state rather than triggering immediate translations
 - Encounter lock: while an enemy is active, story choices, travel, and free-form actions are blocked; required fights cannot be escaped
@@ -65,7 +68,7 @@ Do not open `index.html` directly with `file://`; the AI DM needs the server end
 
 ## Important limitations
 
-This is a solo prototype, not a production-ready AI multiplayer game. The AI can narrate reactions and suggest next actions, but it does not yet change authoritative quest/world state or resolve game mechanics. Scripted chapter choices still control the main quest branches. Scripted Japanese response scoring is phrase-pattern based and formative; the AI writing estimate is text-only; a single message is not a reliable proficiency placement test. There is no speech recognition, listening assessment, login, persistent server database, online multiplayer, or server-authoritative combat. Browser save data and rolls can be modified by the player.
+This is a solo prototype, not a production-ready AI multiplayer game. The AI can narrate reactions and suggest next actions, but it does not yet change authoritative quest/world state or resolve game mechanics. Scripted chapter choices still control the main quest branches. Scripted Japanese response scoring and error explanations are phrase-pattern based and formative, not a general grammar evaluator; romaji conversion supports common Hepburn-style syllables but is not a full IME. The AI writing estimate is text-only; a single message is not a reliable proficiency placement test. There is no speech recognition, listening assessment, login, persistent server database, online multiplayer, or server-authoritative combat. Browser save data and rolls can be modified by the player.
 
 The local Node server includes basic input limits, same-origin checks, a per-process request limit, and timeouts. It is intended for local development only. Public AI deployment requires authentication, durable rate limits, abuse monitoring, budget controls, HTTPS, and persistent campaign storage.
 
