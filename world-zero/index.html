@@ -89,6 +89,29 @@ footer{color:#c5b18e;text-align:center;font-size:12px;padding:18px}
         <button data-choice="observe">Stay quiet and observe the traveler's expression and gestures.</button>
       </div>
       <div class="notice" style="margin-top:14px">Prototype note: these choices demonstrate the intended story and language loop. The AI Dungeon Master and adaptive assessment will be connected in a later phase.</div>
+      <div class="card" style="margin-top:18px" id="rulesCard">
+        <h3>Field encounter · Training dummy</h3>
+        <p class="muted small">A safe practice encounter for testing the first deterministic combat rules.</p>
+        <div class="row"><span>Training dummy HP</span><strong id="enemyHpText">18 / 18</strong></div>
+        <div class="bar"><span id="enemyHpBar" style="width:100%"></span></div>
+        <div class="row" style="margin-top:12px;flex-wrap:wrap">
+          <button class="btn gold" id="startCombat">Begin encounter</button>
+          <button class="btn" id="attackBtn" disabled>Attack</button>
+          <button class="btn secondary" id="defendBtn" disabled>Defend</button>
+          <button class="btn secondary" id="fleeBtn" disabled>Retreat</button>
+        </div>
+        <div id="combatLog" class="log" style="margin-top:12px"><p class="muted small">Begin the encounter to roll initiative.</p></div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <h3>Ability check</h3>
+        <p class="muted small">Choose an attribute and test a D20 check against a target difficulty.</p>
+        <div class="grid two">
+          <div><label for="checkAttribute">Attribute</label><select id="checkAttribute"><option>Strength</option><option>Dexterity</option><option>Constitution</option><option>Intelligence</option><option>Wisdom</option><option>Charisma</option></select></div>
+          <div><label for="checkDc">Difficulty class</label><select id="checkDc"><option value="8">Easy · DC 8</option><option value="12" selected>Standard · DC 12</option><option value="15">Hard · DC 15</option><option value="18">Very hard · DC 18</option></select></div>
+        </div>
+        <button class="btn gold" id="rollCheck" style="margin-top:8px">Roll ability check</button>
+        <p id="checkResult" class="muted small" aria-live="polite">No check rolled yet.</p>
+      </div>
       <h3 style="margin-top:20px">Recent events</h3><div class="log" id="recentLog"></div>
     </div>
     <div class="view" id="view-character">
@@ -96,7 +119,7 @@ footer{color:#c5b18e;text-align:center;font-size:12px;padding:18px}
       <div class="row" style="justify-content:flex-start;margin-bottom:18px"><div class="avatar" id="avatar">A</div><div><h3 id="characterHeading" style="border:0;margin:0">Ari</h3><span class="muted" id="characterSub">Human · Adventurer · Level 1</span></div></div>
       <div class="grid two">
         <div class="card"><h3>Character details</h3><div class="field"><label for="charName">Name</label><input id="charName" value="Ari" maxlength="24"></div><div class="field"><label for="charSpecies">Species</label><select id="charSpecies"><option>Human</option><option>Elf</option><option>Dwarf</option><option>Halfling</option><option>Other</option></select></div><div class="field"><label for="charClass">Class</label><select id="charClass"><option>Adventurer</option><option>Warrior</option><option>Mage</option><option>Rogue</option><option>Cleric</option></select></div><div class="field"><label for="charBackground">Background</label><input id="charBackground" value="Outsider" maxlength="40"></div><button class="btn gold" id="saveCharacter">Save character</button></div>
-        <div class="card"><h3>Attributes</h3><div id="stats"></div><p class="muted small">Starting values are illustrative. Character-building rules will be formalized in Phase 2.</p></div>
+        <div class="card"><h3>Attributes & modifiers</h3><div id="stats"></div><p class="muted small">Use the point-buy controls to allocate 27 points. Scores are capped at 15 before ancestry bonuses.</p><div id="pointBuy" class="small"></div></div>
       </div>
     </div>
     <div class="view" id="view-party">
@@ -170,7 +193,89 @@ document.querySelectorAll('[data-choice]').forEach(btn=>btn.addEventListener('cl
 }));
 document.querySelectorAll('[data-place]').forEach(b=>b.addEventListener('click',()=>{document.getElementById('placeInfo').textContent=b.dataset.place+': '+({'Forest clearing':'Where you first awoke.','Kodama Village':'A small settlement at the edge of the forest.','Old Watchtower':'An unexplored structure on the ridge.'}[b.dataset.place]||'An unexplored location.');}));
 document.getElementById('resetBtn').addEventListener('click',()=>{if(confirm('Reset your local demo campaign? This cannot be undone.')){localStorage.removeItem(KEY);state={...defaults,events:[...defaults.events]};document.querySelector('.scene').querySelectorAll('p[style]').forEach(x=>x.remove());document.getElementById('choices').innerHTML='<button data-choice="greet">「こんにちは」— Try a greeting. <span class="muted small">Konnichiwa · Hello</span></button><button data-choice="help">「助けてください」— Ask for help. <span class="muted small">Tasukete kudasai · Please help me</span></button><button data-choice="gesture">Point to yourself and gesture that you are confused.</button><button data-choice="observe">Stay quiet and observe the traveler’s expression and gestures.</button>';document.querySelectorAll('[data-choice]').forEach(btn=>btn.addEventListener('click',()=>location.reload()));save();location.reload();}});
+
 render();
+</script>
+<script>
+/* Phase 2 rules layer: deterministic client-side prototype rules.
+   Production authority must move server-side before multiplayer release. */
+(()=>{
+ const ATTRS=['Strength','Dexterity','Constitution','Intelligence','Wisdom','Charisma'];
+ const COST={8:0,9:1,10:2,11:3,12:4,13:5,14:7,15:9};
+ const CLASS={
+  Adventurer:{hp:10,primary:['Dexterity','Wisdom'],gear:['Traveler’s cloak','Rations']},
+  Warrior:{hp:14,primary:['Strength','Constitution'],gear:['Iron sword','Padded armor']},
+  Mage:{hp:8,primary:['Intelligence','Wisdom'],gear:['Oak wand','Spellbook']},
+  Rogue:{hp:10,primary:['Dexterity','Intelligence'],gear:['Dagger','Lockpicks']},
+  Cleric:{hp:12,primary:['Wisdom','Constitution'],gear:['Mace','Wooden holy symbol']}
+ };
+ let combat={active:false,enemyHp:18,enemyMax:18,defending:false,round:0};
+ const $=id=>document.getElementById(id);
+ const modifier=n=>Math.floor((Number(n)-10)/2);
+ const roll=sides=>Math.floor(Math.random()*sides)+1;
+ const totalCost=()=>ATTRS.reduce((n,a)=>n+(COST[state.stats[a]]??99),0);
+ const logCombat=t=>{const el=$('combatLog');if(!el)return;const p=document.createElement('p');p.className='log-entry';p.textContent=t;el.prepend(p);};
+ function addXP(n,why){state.xp+=n;let gained=false;while(state.xp>=state.level*100){state.xp-=state.level*100;state.level++;state.maxHp+=2;state.hp=Math.min(state.maxHp,state.hp+2);gained=true;}event(why+' (+'+n+' XP)'+(gained?' Level up! You are now level '+state.level+'.':''));}
+ function drawStats(){
+  const box=$('stats');if(!box)return;
+  box.innerHTML=ATTRS.map(a=>'<div class="row" style="margin:7px 0"><span>'+a+' <span class="muted">('+ (modifier(state.stats[a])>=0?'+':'')+modifier(state.stats[a])+')</span></span><strong>'+state.stats[a]+'</strong></div>').join('');
+  const pb=$('pointBuy');if(pb){pb.innerHTML='<div class="row"><span>Points spent</span><strong>'+totalCost()+' / 27</strong></div><div class="bar"><span style="width:'+Math.min(100,totalCost()/27*100)+'%"></span></div>'+ATTRS.map(a=>'<div class="row" style="margin:6px 0"><span>'+a+'</span><span><button class="btn secondary smallbtn" data-stat="'+a+'" data-delta="-1" '+(state.stats[a]<=8?'disabled':'')+'>−</button> <strong style="display:inline-block;min-width:22px;text-align:center">'+state.stats[a]+'</strong> <button class="btn secondary smallbtn" data-stat="'+a+'" data-delta="1" '+(state.stats[a]>=15||totalCost()+(COST[Math.min(15,state.stats[a]+1)]-COST[state.stats[a]])>27?'disabled':'')+'>+</button></span></div>').join('');pb.querySelectorAll('[data-stat]').forEach(b=>b.addEventListener('click',()=>{const a=b.dataset.stat,d=Number(b.dataset.delta),next=state.stats[a]+d;if(next<8||next>15)return;const before=totalCost();state.stats[a]=next;if(totalCost()>27){state.stats[a]-=d;return;}save();drawStats();}));}
+ }
+ function refreshCombat(){
+  $('enemyHpText').textContent=combat.enemyHp+' / '+combat.enemyMax;
+  $('enemyHpBar').style.width=(combat.enemyHp/combat.enemyMax*100)+'%';
+  $('startCombat').disabled=combat.active;
+  $('attackBtn').disabled=!combat.active;$('defendBtn').disabled=!combat.active;$('fleeBtn').disabled=!combat.active;
+ }
+ function enemyTurn(){
+  if(!combat.active)return;
+  const armor=state.klass==='Warrior'?2:state.klass==='Cleric'?1:0;
+  const raw=roll(6)+2, damage=Math.max(0,raw-armor-(combat.defending?3:0));
+  state.hp=Math.max(0,state.hp-damage);combat.defending=false;
+  logCombat('The training dummy swings. You take '+damage+' damage.');
+  if(state.hp<=0){combat.active=false;logCombat('You are knocked out. The practice encounter ends.');}
+  save();refreshCombat();
+ }
+ $('startCombat').addEventListener('click',()=>{
+  if(state.hp<=0){state.hp=state.maxHp;}
+  combat={active:true,enemyHp:18,enemyMax:18,defending:false,round:1};
+  const initiative=roll(20)+modifier(state.stats.Dexterity);
+  logCombat('Initiative: you roll '+initiative+'. The practice dummy is ready.');
+  refreshCombat();save();
+ });
+ $('attackBtn').addEventListener('click',()=>{
+  if(!combat.active)return;
+  const r=roll(20), mod=modifier(state.stats[state.klass==='Warrior'?'Strength':'Dexterity']), hit=r+mod>=12;
+  if(hit){const dmg=roll(state.klass==='Warrior'?10:6)+Math.max(0,mod);combat.enemyHp=Math.max(0,combat.enemyHp-dmg);logCombat('Attack: d20 '+r+' '+(mod>=0?'+':'')+mod+' = '+(r+mod)+'. Hit for '+dmg+' damage.');}
+  else logCombat('Attack: d20 '+r+' '+(mod>=0?'+':'')+mod+' = '+(r+mod)+'. Miss.');
+  if(combat.enemyHp<=0){combat.active=false;logCombat('Victory! The training dummy falls apart.');addXP(25,'You defeated the training dummy');refreshCombat();return;}
+  enemyTurn();
+ });
+ $('defendBtn').addEventListener('click',()=>{if(!combat.active)return;combat.defending=true;logCombat('You take a defensive stance. Incoming damage is reduced by 3.');enemyTurn();});
+ $('fleeBtn').addEventListener('click',()=>{if(!combat.active)return;combat.active=false;logCombat('You retreat from the practice encounter.');refreshCombat();});
+ $('rollCheck').addEventListener('click',()=>{
+  const a=$('checkAttribute').value,dc=Number($('checkDc').value),r=roll(20),m=modifier(state.stats[a]),sum=r+m,success=sum>=dc;
+  $('checkResult').textContent=a+': d20 '+r+' '+(m>=0?'+':'')+m+' = '+sum+' vs DC '+dc+' — '+(success?'Success':'Failure');
+  if(success)addXP(5,'Successful '+a+' ability check');
+  else event('Attempted a '+a+' ability check (DC '+dc+'): '+sum+'.');
+ });
+ const classSelect=$('charClass');
+ classSelect.addEventListener('change',()=>{
+  const c=CLASS[classSelect.value];if(!c)return;
+  state.klass=classSelect.value;state.maxHp=c.hp+modifier(state.stats.Constitution)*2;state.hp=Math.min(state.hp,state.maxHp);
+  state.items=[...new Set([...state.items,...c.gear])];save();
+ });
+ const saveCharacter=$('saveCharacter');
+ saveCharacter.addEventListener('click',()=>{
+  const c=CLASS[state.klass]||CLASS.Adventurer;
+  state.maxHp=Math.max(1,c.hp+modifier(state.stats.Constitution)*2);
+  state.hp=Math.min(state.maxHp,state.hp||state.maxHp);
+  save();drawStats();
+ });
+ // Make starting character class and ability allocation coherent on first use.
+ if(!state.rulesInitialized){state.rulesInitialized=true;state.stats={Strength:10,Dexterity:10,Constitution:10,Intelligence:10,Wisdom:10,Charisma:10};state.maxHp=CLASS[state.klass]?.hp||10;state.hp=state.maxHp;save();}
+ drawStats();refreshCombat();
+})();
 </script>
 </body>
 </html>
