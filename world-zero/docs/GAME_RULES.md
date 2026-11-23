@@ -15,7 +15,7 @@ Checks use `d20 + relevant modifier >= DC`. Suggested DCs are 8 (easy), 12 (stan
 | Adventurer | 12 | 5 | 5 | Flexible generalist |
 | Warrior | 16 | 2 | 8 | Heavy melee and defense |
 | Mage | 9 | 12 | 3 | Offensive magic and control |
-| Rogue | 11 | 4 | 9 | Precision, poison, escape |
+| Rogue | 11 | 4 | 9 | Precision, poison, evasion |
 | Cleric | 13 | 10 | 4 | Healing, wards, radiant attacks |
 
 Each class has two basic actions and three milestone techniques. Class techniques unlock at levels 2, 3, and 5. The character learns an unlocked technique from the Abilities screen. Mage and Cleric abilities primarily consume mana; martial abilities consume stamina.
@@ -25,9 +25,10 @@ Each class has two basic actions and three milestone techniques. Class technique
 - Combat is turn-based. Player actions resolve before enemy retaliation.
 - Attacks roll d20 + the relevant class attribute modifier against enemy AC.
 - A hit deals a random die based on the move's power plus a positive relevant attribute modifier. Natural 20s add a bonus die.
-- Defensive moves reduce the next incoming damage; wards absorb damage; healing restores HP; poison deals damage on subsequent enemy turns; escape ends combat.
+- Defensive moves reduce the next incoming damage; wards absorb damage; healing restores HP; poison deals damage on subsequent enemy turns. Required encounters cannot be escaped.
 - Enemy attacks deal a random amount based on the encounter's damage rating.
-- If HP reaches zero, the character retreats to safety at half HP and loses 5 gold. The campaign continues.
+- While an enemy is active, story choices, travel/navigation, and free-form Dungeon Master actions are locked. Only combat moves are available until the foe is defeated.
+- If HP reaches zero, the character is revived at half HP and loses 5 gold, but the unresolved foe remains active at full HP; the encounter must still be completed.
 
 ## Level progression and rewards
 
@@ -47,6 +48,8 @@ The AI DM receives the player's free-form action, a bounded snapshot of characte
 The AI is not authoritative. It must not award XP, gold, items, levels, stats, decide dice, resolve combat, or commit quest/world changes. The current prototype displays AI suggestions but still relies on scripted story choices for main-quest progression. Future dynamic story actions must be validated and applied by the game engine.
 
 ## Language learning
+
+Scripted dialogue presents Japanese without an immediate translation. Players infer meaning from gestures, expression, and scene context, then choose an interpretation. Incorrect guesses are allowed and reveal the meaning afterward; the intent is contextual comprehension rather than a perfect-translation prompt.
 
 AI feedback evaluates only the Japanese text actually supplied. English-only actions and gestures provide no Japanese production evidence. A single sample is not a reliable placement test; estimates are formative and should remain low-confidence until supported by multiple examples. Text interaction does not assess listening or pronunciation.
 
