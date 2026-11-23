@@ -15,31 +15,40 @@
 - [x] Mana/stamina costs, healing, defense, wards, poison, stun, and escape
 - [x] D20 attack rolls against enemy armor class
 - [x] Enemy turns, damage, defeat, and recovery
-- [x] XP, automatic level progression, resource increases/restoration, gold, and supply rewards
-- [x] Unlockable class abilities at milestone levels
+- [x] XP and automatic level progression
+- [x] HP growth and class ability unlocks at milestone levels
+- [x] No level-up mana/stamina increases, full refill, gold, or supply bundle
 - [x] Branching first chapter with quest outcomes and journal state
 - [ ] Skill proficiency, advantage/disadvantage, robust status-effect timing, and item effects
 - [ ] Extract rules into tested TypeScript modules
 - [ ] Move authoritative dice, combat, inventory, and progression server-side
 
-**Current status:** the checked items are implemented for offline solo play in `index.html`. They are experimental browser-side rules and must not be trusted for multiplayer.
+**Current status:** checked mechanics are implemented for offline solo play in `index.html`. They remain browser-side and are not suitable as multiplayer authority.
 
 ## Phase 3 — AI Dungeon Master
-- [ ] Secure server-side AI gateway and structured scene/action contracts
-- [ ] Retrieve relevant campaign context and NPC memories
-- [ ] Let the DM propose actions; validate all mechanics in the game engine
-- [ ] Persist event summaries and support recovery/rate limits
+- [x] Secure server-side OpenAI API bridge; API key stays in server environment
+- [x] Structured scene/action response contract
+- [x] AI narration reacts to free-form player actions
+- [x] Japanese dialogue, translation, and cautious writing feedback
+- [x] Suggested next actions and recent-turn context
+- [x] Bound input, request size, per-process rate, and request duration
+- [ ] Authentication and durable per-user rate limiting
+- [ ] Let validated DM proposals update world/quest state through engine-approved actions
+- [ ] NPC memory retrieval and persistent campaign summaries
+- [ ] Deploy the endpoint to a production host
 
 ## Phase 4 — Japanese learning engine
+- [x] Initial text-only Japanese feedback and confidence estimate from AI
 - [ ] Track vocabulary, grammar, reading, listening, and independent production separately
-- [ ] Adapt dialogue complexity and support to each player
-- [ ] Evaluate meaning and correctness rather than rewarding text that merely contains Japanese characters
+- [ ] Build evidence over multiple sessions before assigning a stable level
+- [ ] Adapt dialogue complexity and support using persistent learner profiles
 - [ ] Add contextual review and spaced retrieval
+- [ ] Add audio and listening assessment
 
 ## Phase 5 — World state and persistence
 - [ ] Persist campaigns, NPCs, locations, factions, quests, and events
 - [ ] Add consequence rules and map discovery
-- [ ] Save/resume and session recap
+- [ ] Save/resume across devices and session recap
 
 ## Phase 6 — Multiplayer
 - [ ] Authentication, invitations, campaign roles, and permissions
@@ -54,4 +63,4 @@
 
 ## Release definition
 
-The current milestone is a **playable solo vertical slice**, not a public beta. A public beta requires the AI DM, validated language assessment, persistent world state, server-authoritative rules, multiplayer testing, and a complete content pass.
+The current milestone is an **AI-connected solo vertical slice**, not a public beta. A public beta requires engine-approved dynamic world changes, validated longitudinal language assessment, persistent world state, server-authoritative rules, authentication, multiplayer testing, production hosting, and a complete content pass.
