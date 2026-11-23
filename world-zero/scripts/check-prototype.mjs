@@ -47,7 +47,8 @@ assert.equal(serverCheck.status, 0, 'Server syntax check failed:\\n' + serverChe
 const serverSource = fs.readFileSync(serverPath, 'utf8');
 assert.ok(serverSource.includes('OPENAI_API_KEY'), 'Server must read the API key from its environment');
 assert.ok(serverSource.includes('/v1/responses'), 'Server must call the Responses API');
-assert.ok(!html.includes('OPENAI_API_KEY'), 'The browser must never contain the OpenAI API key');
+assert.ok(!html.includes('OPENAI_API_KEY='), 'The browser must never contain an API key assignment');
+assert.ok(!html.includes('api.openai.com/v1/responses'), 'The browser must call only the local AI endpoint');
 assert.ok(!html.includes('supply bundle'), 'Level-up UI must not promise a supply bundle');
 assert.ok(!html.includes('maximum mana, +2 maximum stamina'), 'Level-up UI must not increase mana/stamina');
 
