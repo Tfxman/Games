@@ -1,0 +1,25 @@
+name: WORLD ZERO prototype checks
+
+on:
+  pull_request:
+    paths:
+      - "world-zero/**"
+      - ".github/workflows/world-zero-check.yml"
+  push:
+    branches:
+      - main
+      - "feature/world-zero-foundation"
+    paths:
+      - "world-zero/**"
+      - ".github/workflows/world-zero-check.yml"
+
+jobs:
+  prototype-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check prototype structure and JavaScript syntax
+        run: node world-zero/scripts/check-prototype.mjs
