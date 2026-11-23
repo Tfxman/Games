@@ -79,3 +79,9 @@ assert.ok(html.includes('function useCombatAction(action)'), 'Tactical combat ac
 assert.ok(html.includes('state.evadeNext') && html.includes('state.counterDamage'), 'Retreat, hide, and counter states must resolve during enemy turns');
 
 console.log('WORLD ZERO prototype checks passed (' + requiredIds.length + ' UI anchors, ' + scripts.length + ' inline scripts).');
+
+assert.ok(html.includes('visibleQuests') && html.includes("q[1]!=='hidden'"), 'Hidden quests must not appear in the quest log before story discovery');
+assert.ok(html.includes('function validateJapaneseResponse') && html.includes('RESPONSE_ACCEPTANCE'), 'Japanese responses must be checked against scene-specific accepted answers');
+assert.ok(html.includes('daijoubu desu') && html.includes('hai daijoubu desu') && html.includes('watashi ga tetsudaimasu'), 'The first two dialogue prompts must accept multiple valid Japanese answers');
+assert.ok(html.includes('normalizeDialogueKey(k)===normalizeDialogueKey(line)'), 'Dialogue response lookup must tolerate punctuation and quote formatting');
+assert.ok(!html.includes("best:'hai wakarimashita',medium:['hai','wakarimashita']"), 'Unknown dialogue must not fall back to an unrelated generic answer');
