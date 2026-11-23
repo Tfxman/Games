@@ -252,7 +252,8 @@ else if(a==="plant")plant(id);
 else if(a==="tend")tend(id);
 else if(a==="harvest")harvest(id);
 else if(a==="location")location(id);
-else if(a==="chapterfinish")chapterFinish();\nelse if(a==="rest")advanceDay();
+else if(a==="chapterfinish")chapterFinish();
+else if(a==="rest")advanceDay();
 else if(a==="journalview"){let content=document.getElementById("journal-content");if(!content)return;document.querySelectorAll("#view-journal .tabs button").forEach(b=>b.classList.toggle("active",b===el));if(id==="species")content.innerHTML=state.identified.map(k=>'<div class="journal-entry"><b>'+plants[k].common+'</b> · <i>'+plants[k].scientific+'</i><p class="small">'+plants[k].traits.join(" ")+'</p></div>').join("")||'<div class="empty">No confirmed species yet.</div>';else if(id==="rumors")content.innerHTML=state.rumors.map(k=>'<div class="journal-entry"><b>'+characters[k].name+'</b><p>'+characters[k].rumor+'</p><span class="pill">Unverified lead</span></div>').join("")||'<div class="empty">No rumors collected.</div>';else content.innerHTML=Object.keys(state.evidence).map(k=>'<div class="journal-entry"><b>'+(hasIdent(k)?plants[k].common:"Unidentified field specimen")+'</b><p class="small">'+(state.evidence[k]||[]).length+' observations recorded. '+(hasIdent(k)?"Confirmed.":"Still under investigation.")+'</p></div>').join("")||'<div class="empty">No observations recorded.</div>'}
 }
 document.addEventListener("click",function(e){let b=e.target.closest("[data-tab]");if(b){e.preventDefault();tab(b.dataset.tab);return}let a=e.target.closest("[data-action]");if(a){e.preventDefault();action(a.dataset.action,a.dataset.id,a)}});
