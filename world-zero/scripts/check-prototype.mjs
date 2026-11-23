@@ -85,3 +85,13 @@ assert.ok(html.includes('function validateJapaneseResponse') && html.includes('R
 assert.ok(html.includes('daijoubu desu') && html.includes('hai daijoubu desu') && html.includes('watashi ga tetsudaimasu'), 'The first two dialogue prompts must accept multiple valid Japanese answers');
 assert.ok(html.includes('normalizeDialogueKey(k)===normalizeDialogueKey(line)'), 'Dialogue response lookup must tolerate punctuation and quote formatting');
 assert.ok(!html.includes("best:'hai wakarimashita',medium:['hai','wakarimashita']"), 'Unknown dialogue must not fall back to an unrelated generic answer');
+
+const serverPath = new URL('../server.mjs', import.meta.url);
+const serverSource = fs.readFileSync(serverPath, 'utf8');
+const serverSyntax = spawnSync(process.execPath, ['--check', serverPath.pathname], { encoding:'utf8' });
+assert.equal(serverSyntax.status, 0, 'AI server must pass Node syntax validation: ' + serverSyntax.stderr);
+assert.ok(serverSource.includes("url.pathname === '/api/language'") && serverSource.includes('async function handleLanguage'), 'The server must expose a dedicated Japanese language interpretation endpoint');
+assert.ok(serverSource.includes('const languageSchema') && serverSource.includes('grammar_points') && serverSource.includes('npc_response') && serverSource.includes('next_actions'), 'The AI response must contain structured grammar feedback and procedural story content');
+assert.ok(serverSource.includes('Accept natural paraphrases') && serverSource.includes('Do not punish valid alternate wording'), 'The language judge must assess meaning and grammar, not exact phrase matches');
+assert.ok(html.includes("fetch('/api/language'") && html.includes('AI Japanese assessment') && html.includes('generatedNextActions'), 'Japanese dialogue must invoke the AI interpreter and show generated story choices');
+assert.ok(html.includes('using the local phrase checker') && html.includes('validateJapaneseResponse'), 'The game must retain a local fallback when the AI server is unavailable');
