@@ -34,9 +34,11 @@ Each class has two basic actions and three milestone techniques. Class technique
 The XP threshold is current level × 100. Excess XP carries over. On each level:
 - Maximum HP increases by 2 (3 for Warrior).
 - The character recovers HP equal to that increase, but does not receive a full refill.
+- Maximum mana increases by 1 and the character recovers 1 mana.
+- Maximum stamina increases by 1 and the character recovers 1 stamina.
 - Class techniques become available at milestone levels 2, 3, and 5; the player chooses when to learn each technique from the Abilities screen.
 
-Leveling does **not** increase mana or stamina, refill those resources, grant gold, or grant a supply bundle. Gold and items can still be earned through story and encounter rewards.
+Leveling does **not** fully refill HP, mana, or stamina, grant gold, or grant a supply bundle. Gold and items can still be earned through story and encounter rewards.
 
 ## AI Dungeon Master
 
