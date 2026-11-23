@@ -56,5 +56,8 @@ assert.ok(html.includes('if(state.enemy)') && html.includes('activeChoices'), 'A
 assert.ok(html.includes('free-form actions are unavailable until this foe is defeated'), 'Combat lock must be visible to the player');
 assert.ok(html.includes('unresolved foe still blocks the path'), 'Defeat must not bypass an unresolved encounter');
 assert.ok(!html.includes("type:'escape'"), 'Required encounters must not have a combat escape ability');
+for (const action of ['retreat','hide','counter','weapon','ranged']) { assert.ok(html.includes("['"+action+"'") || html.includes("data-combat-action=\\\"' + a[0]"), 'Missing tactical combat action: ' + action); }
+assert.ok(html.includes('function useCombatAction(action)'), 'Tactical combat actions must resolve through the combat engine');
+assert.ok(html.includes('state.evadeNext') && html.includes('state.counterDamage'), 'Retreat, hide, and counter states must resolve during enemy turns');
 
 console.log('WORLD ZERO prototype checks passed (' + requiredIds.length + ' UI anchors, ' + scripts.length + ' inline scripts).');
